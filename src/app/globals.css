@@ -1,17 +1,34 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 @import "tailwindcss";
+@import "tailwindcss/preflight";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Common */
+  --color-common-0: #05141F;
+  --color-common-100: #FFFFFF;
+  /* Cool Neutral */
+  --color-coolNeutral-100: #F7F7F8;
+  --color-coolNeutral-200: #F4F4F5;
+  --color-coolNeutral-300: #E1E2E4;
+  --color-coolNeutral-400: #C7C8CA;
+  --color-coolNeutral-500: #939598;
+  --color-coolNeutral-600: #6D6E71;
+  --color-coolNeutral-650: #5A5C63;
+  --color-coolNeutral-700: #46474C;
+  --color-coolNeutral-750: #37383C;
+  --color-coolNeutral-800: #292A2D;
+  --color-coolNeutral-850: #171719;
+  --color-coolNeutral-900: #010E18;
+  /* Semantic */
+  --color-semantic-border-divider: #C7C8CA;
+  --color-semantic-border-box: #939598;
+  --color-semantic-component-normal: #FFFFFF;
+  --color-semantic-component-inactive: #939598;
+  --color-semantic-component-strong: #05141F;
+  --color-semantic-background-normal: #FFFFFF;
+  --color-semantic-system-success: #0ABF53;
+  --color-semantic-system-error: #FF5E47;
 }
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -19,8 +36,40 @@
   }
 }
 
+@layer utilities {
+  /* Title */
+  .title-1 { @apply text-[40px] leading-[150%] font-bold; }
+  .title-2 { @apply text-[36px] leading-[150%] font-bold; }
+
+  /* Headline */
+  .headline-1 { @apply text-[28px] leading-[150%] font-bold; }
+  .headline-2 { @apply text-[24px] leading-[150%] font-bold; }
+
+  /* Body */
+  .body-1-500 { @apply text-[20px] leading-[160%] font-medium; }
+  .body-1-700 { @apply text-[20px] leading-[160%] font-bold; }
+  .body-2-500 { @apply text-[18px] leading-[160%] font-medium; }
+  .body-2-700 { @apply text-[18px] leading-[160%] font-bold; }
+  .body-3-500 { @apply text-[16px] leading-[150%] font-medium; }
+  .body-3-700 { @apply text-[16px] leading-[150%] font-bold; }
+
+  /* Label */
+  .label-1 { @apply text-[14px] leading-[150%] font-bold; }
+  .label-2-500 { @apply text-[13px] leading-[150%] font-medium; }
+  .label-2-700 { @apply text-[13px] leading-[150%] font-bold; }
+  .label-3 { @apply text-[12px] leading-[150%] font-bold; }
+
+  /* Caption */
+  .caption-1 { @apply text-[11px] leading-[160%] font-bold; }
+  .caption-2 { @apply text-[10px] leading-[150%] font-bold; }
+  .caption-3 { @apply text-[8px] leading-[160%] font-bold; }
+  .caption-4-300 { @apply text-[7px] leading-[160%] font-light; }
+  .caption-4-500 { @apply text-[7px] leading-[160%] font-medium; }
+  .caption-4-700 { @apply text-[7px] leading-[160%] font-bold; }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Pretendard', sans-serif;
 }
