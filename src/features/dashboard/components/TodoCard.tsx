@@ -53,7 +53,7 @@ export default function TodoCard({
    references,
 }: TodoDetailProps) {
     return (
-        <div className="flex bg-blue-100 rounded-[20px] p-3 gap-3 min-w-5xl w-auto">
+        <div className="flex bg-blue-100 rounded-[20px] p-3 gap-3 w-auto">
             {/* 왼쪽: 하얀 카드 (메인) */}
             <div className="flex-1 bg-white rounded-[16px] shadow-md p-4">
                 <TodoHeader project={project} title={title} progress={progress} />
