@@ -80,9 +80,9 @@ export default function Home() {
                     estimatedTime="2시간"
                     deadline="2023-12-31"
                     tasks={[
-                        { id: 1, name: "하위 작업 1", estimatedTime: "1h", completed: true },
-                        { id: 2, name: "하위 작업 2", estimatedTime: "1.5h", completed: false },
-                        { id: 2, name: "하위 작업 3", estimatedTime: "2h", completed: false },
+                        { id: 1, name: "하위 작업 1", estimatedTime: "1h" },
+                        { id: 2, name: "하위 작업 2", estimatedTime: "1.5h" },
+                        { id: 2, name: "하위 작업 3", estimatedTime: "2h"  },
                     ]}
                 />
 
@@ -93,9 +93,9 @@ export default function Home() {
                     estimatedTime="2시간"
                     deadline="2023-12-31"
                     tasks={[
-                        { id: 1, name: "하위 작업 1", estimatedTime: "1h", completed: true },
-                        { id: 2, name: "하위 작업 2", estimatedTime: "1.5h", completed: false },
-                        { id: 2, name: "하위 작업 3", estimatedTime: "2h", completed: false },
+                        { id: 1, name: "하위 작업 1", estimatedTime: "1h" },
+                        { id: 2, name: "하위 작업 2", estimatedTime: "1.5h" },
+                        { id: 2, name: "하위 작업 3", estimatedTime: "2h" },
                     ]}
                 />
 
@@ -106,9 +106,9 @@ export default function Home() {
                     estimatedTime="2시간"
                     deadline="2023-12-31"
                     tasks={[
-                        { id: 1, name: "하위 작업 1", estimatedTime: "1h", completed: true },
-                        { id: 2, name: "하위 작업 2", estimatedTime: "1.5h", completed: false },
-                        { id: 2, name: "하위 작업 3", estimatedTime: "2h", completed: false },
+                        { id: 1, name: "하위 작업 1", estimatedTime: "1h" },
+                        { id: 2, name: "하위 작업 2", estimatedTime: "1.5h" },
+                        { id: 2, name: "하위 작업 3", estimatedTime: "2h" },
                     ]}
                 />
             </div>
