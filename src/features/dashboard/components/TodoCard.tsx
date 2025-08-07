@@ -72,7 +72,7 @@ export default function TodoCard({
                     alt="더보기"
                     className="self-end w-4 h-4 mb-2 cursor-pointer"
                 />
-                <div className="text-caption-1 font-semibold text-coolNeutral-600 mb-6 whitespace-pre-line">
+                <div className="caption-1 font-semibold text-coolNeutral-600 mb-6 whitespace-pre-line">
                     {description}
                 </div>
                 <div className="flex flex-col gap-1">
@@ -82,12 +82,12 @@ export default function TodoCard({
                             href={ref.url || '#'}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-block bg-white border border-gray-200 text-caption-2 text-coolNeutral-500 rounded-[6px] px-2 py-1 shadow-sm hover:bg-gray-50 transition"
+                            className="w-fit bg-white border border-gray-200 caption-2 text-coolNeutral-500 rounded-[6px] px-2 py-1 shadow-sm hover:bg-gray-50 transition"
                         >
                             {ref.name}
                         </a>
                     ))}
-                    <span className="text-caption-1 text-coolNeutral-650 font-semibold cursor-pointer mt-1">+3 Files</span>
+                    <span className="w-fit caption-1 text-coolNeutral-650 font-semibold cursor-pointer mt-1">+3 Files</span>
                 </div>
             </div>
         </div>
@@ -102,14 +102,14 @@ function TodoHeader({
     return (
         <div className="flex items-center justify-between w-full">
             {/* 왼쪽: 드래그 핸들 + 배지 + 제목 */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
                 <img src="/icons/ic-drag-handle.svg" alt="드래그" />
                 {/* 프로젝트 배지 */}
-                <span className="bg-blue-700 text-caption-2 text-common-100 font-semibold px-2 py-1 rounded-[6px]">
+                <span className="bg-blue-700 caption-2 text-common-100 font-semibold px-2 py-1 rounded-[6px]">
           {project}
         </span>
                 {/* 제목 */}
-                <span className="text-body-2-700 ml-1">
+                <span className="body-2-700 ml-1">
           {title}
         </span>
             </div>
@@ -124,7 +124,7 @@ function TodoHeader({
                         />
                     </div>
                 </div>
-                <span className="text-blue-700 text-caption-2 ml-2">{progress}% 진행 중</span>
+                <span className="text-blue-700 caption-2 ml-2">{progress}% 진행 중</span>
             </div>
         </div>
     );
@@ -138,20 +138,20 @@ function TodoMetaInfo({ importance, estimatedTime, deadline }: TodoMetaInfoProps
     return (
         <div className="ml-6 space-y-3">
             {/* 중요도 */}
-            <div className="flex items-center text-label-1 text-coolNeutral-500">
+            <div className="flex items-center label-1 text-coolNeutral-500">
                 {/* 아이콘 */}
                 <img src="/icons/ic-star.svg" alt="중요도" className="w-4 h-4" />
                 <span className="ml-1">중요도</span>
                 <span className={`ml-2 ${importanceColor}`}>{importance}</span>
             </div>
             {/* 예상 소요시간 */}
-            <div className="flex items-center text-label-1 text-coolNeutral-500">
+            <div className="flex items-center label-1 text-coolNeutral-500">
                 <img src="/icons/ic-clock.svg" alt="소요시간" className="w-4 h-4" />
                 <span className="ml-1">예상 소요시간</span>
                 <span className="ml-2 text-coolNeutral-750">{estimatedTime}</span>
             </div>
             {/* 기한 */}
-            <div className="flex items-center text-label-1 text-coolNeutral-500">
+            <div className="flex items-center label-1 text-coolNeutral-500">
                 <img src="/icons/ic-calendar.svg" alt="기한" className="w-4 h-4" />
                 <span className="ml-1">기한</span>
                 <span className="ml-2 text-coolNeutral-750">{deadline}</span>
@@ -174,7 +174,7 @@ function TodoTaskList({ tasks }: { tasks: Task[] }) {
                         <Checkbox checked={task.completed} />
                         <span
                             className={cn(
-                                'text-label-1',
+                                'label-1',
                                 task.completed && 'line-through text-coolNeutral-600'
                             )}
                         >
@@ -183,7 +183,7 @@ function TodoTaskList({ tasks }: { tasks: Task[] }) {
                     </div>
                     <span
                         className={cn(
-                            'text-label-1',
+                            'label-1',
                             task.completed ? 'text-coolNeutral-600' : 'text-gray-600'
                         )}
                     >

@@ -29,38 +29,40 @@
   --color-semantic-background-normal: #FFFFFF;
   --color-semantic-system-success: #0ABF53;
   --color-semantic-system-error: #FF5E47;
+  /* Primary */
+  --color-primary-600: #0BAFDC;
 }
 
 @layer utilities {
   /* Title */
-  .title-1 { @apply text-[40px] leading-[150%] font-bold; }
-  .title-2 { @apply text-[36px] leading-[150%] font-bold; }
+  .title-1 { @apply text-[40px] leading-[150%] font-semibold; }
+  .title-2 { @apply text-[36px] leading-[150%] font-semibold; }
 
   /* Headline */
-  .headline-1 { @apply text-[28px] leading-[150%] font-bold; }
-  .headline-2 { @apply text-[24px] leading-[150%] font-bold; }
+  .headline-1 { @apply text-[28px] leading-[150%] font-semibold; }
+  .headline-2 { @apply text-[24px] leading-[150%] font-semibold; }
 
   /* Body */
   .body-1-500 { @apply text-[20px] leading-[160%] font-medium; }
-  .body-1-700 { @apply text-[20px] leading-[160%] font-bold; }
+  .body-1-700 { @apply text-[20px] leading-[160%] font-semibold; }
   .body-2-500 { @apply text-[18px] leading-[160%] font-medium; }
-  .body-2-700 { @apply text-[18px] leading-[160%] font-bold; }
+  .body-2-700 { @apply text-[18px] leading-[160%] font-semibold; }
   .body-3-500 { @apply text-[16px] leading-[150%] font-medium; }
-  .body-3-700 { @apply text-[16px] leading-[150%] font-bold; }
+  .body-3-700 { @apply text-[16px] leading-[150%] font-semibold; }
 
   /* Label */
-  .label-1 { @apply text-[14px] leading-[150%] font-bold; }
+  .label-1 { @apply text-[14px] leading-[150%] font-semibold; }
   .label-2-500 { @apply text-[13px] leading-[150%] font-medium; }
   .label-2-700 { @apply text-[13px] leading-[150%] font-bold; }
-  .label-3 { @apply text-[12px] leading-[150%] font-bold; }
+  .label-3 { @apply text-[12px] leading-[150%] font-semibold; }
 
   /* Caption */
-  .caption-1 { @apply text-[11px] leading-[160%] font-bold; }
-  .caption-2 { @apply text-[10px] leading-[150%] font-bold; }
-  .caption-3 { @apply text-[8px] leading-[160%] font-bold; }
+  .caption-1 { @apply text-[11px] leading-[160%] font-semibold; }
+  .caption-2 { @apply text-[10px] leading-[150%] font-semibold; }
+  .caption-3 { @apply text-[8px] leading-[160%] font-semibold; }
   .caption-4-300 { @apply text-[7px] leading-[160%] font-light; }
   .caption-4-500 { @apply text-[7px] leading-[160%] font-medium; }
-  .caption-4-700 { @apply text-[7px] leading-[160%] font-bold; }
+  .caption-4-700 { @apply text-[7px] leading-[160%] font-semibold; }
 }
 
 body {
