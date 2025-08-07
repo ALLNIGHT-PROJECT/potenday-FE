@@ -1,8 +1,11 @@
 'use client';
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function OnboardingWelcomePage() {
+    const router = useRouter();
+
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-white">
             {/* 프로필/서비스 아이콘 (placeholder) */}
@@ -21,6 +24,7 @@ export default function OnboardingWelcomePage() {
             {/* 네이버 로그인 버튼 */}
             <button
                 className="flex items-center justify-center gap-[10px] px-4 py-3 rounded-lg bg-[#2DB400] text-common-100 body-3-700 shadow-md"
+                onClick={() => router.push('/onboarding/profile')}
             >
                 <Image src="/icons/ic-naver.svg" alt="네이버 아이콘" width={16} height={16} />
                 네이버 로그인으로 1초만에 시작
