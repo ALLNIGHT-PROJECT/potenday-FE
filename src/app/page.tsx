@@ -2,8 +2,11 @@
 
 import TodoCard from "@/features/dashboard/components/TodoCard";
 import UpcomingTodoCard from "@/features/dashboard/components/UpcomingTodoCard";
+import { redirect } from "next/navigation";
 
 export default function Home() {
+    redirect("/onboarding/welcome");
+
     return (
         <div className="flex space-x-5">
             <div className="flex-1 flex-col pb-[30px] px-[30px] space-y-4 items-start">

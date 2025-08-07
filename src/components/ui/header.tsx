@@ -1,8 +1,14 @@
 'use client';
 
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export default function Header() {
+    const pathname = usePathname();
+    const isOnboarding = pathname.startsWith("/onboarding");
+
+    if (isOnboarding) return null;
+
     return (
         <header className="flex items-center w-full px-8 py-4 bg-white">
             {/* 좌측: 워크스페이스/날짜 */}
