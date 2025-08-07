@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
+import CommonDropdown from "@/components/ui/dropdown/CommonDropdown";
 
 type UpcomingTodoTask = {
     id: number;
@@ -68,12 +69,56 @@ function UpcomingTodoHeader({
                     {title}
                 </span>
             </div>
-            {/* ic-more를 우측 상단에 */}
-            <img
-                src="/icons/ic-more.svg"
-                alt="더보기"
-                className="self-end w-4 h-4 mb-2 cursor-pointer"
-            />
+            <div className="flex flex-col min-w-[230px] max-w-xs pt-2">
+            {/* ic-more를 우측 상단에 완전히 붙이기 위한 flex 컨테이너 */}
+                <div className="flex justify-end items-start w-full">
+                    <CommonDropdown
+                        align="right"
+                        offsetY={0}
+                        dropdownClassName="min-w-[100px]"
+                        renderButton={({ onClick }) => (
+                            <button type="button" onClick={onClick} className="p-0 m-0">
+                                <img
+                                    src="/icons/ic-more.svg"
+                                    alt="더보기"
+                                    className="w-4 h-4 cursor-pointer"
+                                />
+                            </button>
+                        )}
+                    >
+                        <div className="min-w-[180px] flex flex-col p-[8px]">
+                            <button
+                                type="button"
+                                className="group flex items-center pl-4 pr-2 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition justify-between label-1 text-coolNeutral-700 font-semibold"
+                                onClick={() => {
+                                    console.log("수정하기")
+                                }}
+                            >
+                                수정하기
+                                <img
+                                    src="/icons/ic-arrow-right.svg"
+                                    alt=">"
+                                    className="w-4 h-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                                />
+                            </button>
+                            <button
+                                type="button"
+                                className="group flex items-center pl-4 pr-2 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition justify-between label-1 text-coolNeutral-700 font-semibold"
+                                onClick={() => {
+                                    console.log("삭제하기")
+                                }}
+                            >
+                                삭제하기
+                                <img
+                                    src="/icons/ic-arrow-right.svg"
+                                    alt=">"
+                                    className="w-4 h-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                                />
+                            </button>
+                        </div>
+                    </CommonDropdown>
+                </div>
+            </div>
         </div>
     );
 }
