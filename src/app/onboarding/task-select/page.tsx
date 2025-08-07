@@ -19,7 +19,7 @@ export default function OnboardingTaskSelectPage() {
                     desc={`텍스트, 문서 링크만 첨부하면
                     자동으로 할 일을 추출해요`}
                     icon={<div className="w-[142px] h-[142px] bg-[#9D9D9D] mb-[42px]" />}
-                    onClick={() => router.push('/onboarding/extract')}   // 원하는 경로로
+                    onClick={() => router.push('/onboarding/autoTaskExtract_1')}   // 원하는 경로로
                 />
                 {/* 카드: 직접 입력하기 */}
                 <TaskSelectCard
