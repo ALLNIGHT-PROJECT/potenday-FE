@@ -1,12 +1,20 @@
 'use client';
 
 import { useState } from "react";
+import { useRouter } from "next/navigation"
 
 export default function OnboardingProfilePage() {
     const [name, setName] = useState('');
     const [intro, setIntro] = useState('');
+    const router = useRouter();
 
     const canSubmit = name.trim().length > 0 && intro.trim().length > 0;
+
+    const handleClick = () => {
+        if (canSubmit) {
+            router.push('/onboarding/task-select');
+        }
+    };
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-white">
@@ -14,7 +22,7 @@ export default function OnboardingProfilePage() {
             <h1 className="headline-1 text-coolNeutral-700 text-center mb-[36px]">
                 서비스명에 오신 것을 환영해요!
             </h1>
-            <form className="flex flex-col gap-7 w-full max-w-[480px] mx-auto pt-2">
+            <div className="flex flex-col gap-7 w-full max-w-[480px] mx-auto pt-2">
                 {/* 사용자 이름 */}
                 <div>
                     <label className="block label-1 text-coolNeutral-500 mb-2">
@@ -25,7 +33,7 @@ export default function OnboardingProfilePage() {
                         maxLength={10}
                         value={name}
                         onChange={e => setName(e.target.value)}
-                        placeholder="한 줄 소개를 입력해 주세요"
+                        placeholder="이름 입력"
                     />
                     <div className="label-2 text-coolNeutral-500 mt-2">
                         *영문/한글 10자 이내로 사용할 수 있어요
@@ -42,7 +50,7 @@ export default function OnboardingProfilePage() {
                         maxLength={50}
                         value={intro}
                         onChange={e => setIntro(e.target.value)}
-                        placeholder="이름 입력"
+                        placeholder="직접 입력 (ex_UX/UI에 관심이 많은 프리랜서 디자이너)"
                     />
                     <div className="label-2 text-coolNeutral-500 mt-2">
                         *한글 50자 이내로 입력해 주세요
@@ -52,7 +60,7 @@ export default function OnboardingProfilePage() {
                 {/* 시작하기 버튼 */}
                 <div className="flex justify-center mt-[84px]">
                     <button
-                        type="submit"
+                        type="button"
                         disabled={!canSubmit}
                         className={`
                             w-fit px-4 py-2 rounded-[6px] body-3-700
@@ -62,11 +70,12 @@ export default function OnboardingProfilePage() {
                             : 'bg-coolNeutral-250 text-coolNeutral-700'
                         }
                         `}
+                        onClick={handleClick}
                     >
                         시작하기
                     </button>
                 </div>
-            </form>
+            </div>
         </div>
     );
 }
