@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import NotificationDropdown from "@/components/ui/dropdown/NotificationDropdown";
 
 export default function Header() {
     const pathname = usePathname();
@@ -23,9 +24,7 @@ export default function Header() {
 
             {/* 우측: 알림, 프로필, 로그아웃 */}
             <div className="flex items-center gap-2 ml-6">
-                <button className="p-2 flex items-center justify-center bg-white rounded-md border border-gray-200 hover:bg-gray-100 transition">
-                    <Image src="/icons/ic-notification.svg" alt="알림" width={22} height={22} />
-                </button>
+                <NotificationDropdown/>
                 <button className="flex items-center bg-coolNeutral-200 px-3 py-2 rounded-md border border-gray-200 text-gray-900 label-1-700 gap-[10px] hover:bg-gray-50 transition">
                     <div className="w-5 h-5 rounded-full bg-gray-200" />
                     로그아웃
