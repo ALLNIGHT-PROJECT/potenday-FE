@@ -17,7 +17,7 @@ export default function Header() {
                 <div className="flex items-center gap-2">
                     {/* 칸반 아이콘(예시) */}
                     <Image src="/icons/ic-side-bar.svg" alt="" width={16} height={16} />
-                    <span className="label-1 text-coolNeutral-900 truncate">Yeji&apos;s Workspace</span>
+                    <span className="label-1 text-coolNeutral-900 truncate">{'{User}’s Workspace'}</span>
                 </div>
             </div>
 

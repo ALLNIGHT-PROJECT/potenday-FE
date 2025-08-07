@@ -5,15 +5,12 @@ import UpcomingTodoCard from "@/features/dashboard/components/UpcomingTodoCard";
 import { redirect } from "next/navigation";
 
 export default function Home() {
-    redirect("/onboarding/welcome");
+    {/* redirect("/onboarding/welcome"); */}
 
     return (
         <div className="flex space-x-5">
             <div className="flex-1 flex-col pb-[30px] px-[30px] space-y-4 items-start">
                 <TaskHeaderBar />
-                <p className="headline-1 text-common-0">
-                    Tue, 5
-                </p>
                 <TodoCard
                     project="프로젝트 A"
                     title="할 일 제목"
@@ -76,9 +73,24 @@ export default function Home() {
             </div>
 
             <div className="flex-col space-y-4 items-start p-[30px] rounded-tl-2xl border border-gray-200">
-                <p className="headline-2 text-black">
-                    동현&apos;s To Do List
-                </p>
+                <div className="flex items-center">
+                    {/* 좌측 타이틀 */}
+                    <span className="body-1-700 text-coolNeutral-650">Task box</span>
+
+                    <div className="flex-1" />
+
+                    {/* 날짜 선택 박스 */}
+                    <div className="flex items-center bg-coolNeutral-200 rounded-[6px] px-4 py-2 mr-2">
+                        <img src="/icons/ic-calendar-coolNeutral-600.svg" alt="달력" className="w-4 h-4 mr-[10px]" />
+                        <span className="label-1-700 text-coolNeutral-900">2025.08</span>
+                    </div>
+
+                    {/* 정렬 박스 */}
+                    <div className="flex items-center bg-coolNeutral-200 rounded-[6px] px-4 py-2">
+                        <img src="/icons/ic-sort.svg" alt="정렬" className="w-4 h-4 mr-[10px]" />
+                        <span className="label-1-700 text-coolNeutral-900">최신 순</span>
+                    </div>
+                </div>
 
                 <UpcomingTodoCard
                     project="프로젝트 A"
@@ -126,27 +138,13 @@ export default function Home() {
 function TaskHeaderBar() {
     return (
         <div className="w-full flex items-center gap-4">
-            {/* 왼쪽: 할 일 추가하기 */}
-            <button
-                className="
-                  flex items-center gap-2
-                  bg-common-100
-                  rounded-[6px]
-                  border border-coolNeutral-100
-                  px-3 py-2
-                  label-1
-                  text-coolNeutral-800
-                  shadow-md
-                "
-            >
-                <img src="./icons/ic-plus.svg" alt="할 일 추가" className="w-5 h-5" />
-                할 일 추가하기
-            </button>
+            <p className="headline-1 text-common-0">
+                Tue, 5
+            </p>
 
             {/* 중앙 여백 (양끝 정렬) */}
             <div className="flex-1" />
 
-            {/* 오른쪽: AI 채팅 배너 */}
             <div
                 className="
                   flex items-center justify-between
@@ -167,10 +165,26 @@ function TaskHeaderBar() {
                     </span>
                 </div>
                 {/* AI 채팅 열기 */}
-                <button className="text-primary-600 label-1">
-                    AI 채팅 열기 &gt;
+                <button className="flex items-center text-primary-900 label-1">
+                    AI 채팅 열기
+                    <img src="icons/ic-dropdown.svg" alt="Dropdown" className="w-4 h-4 ml-1" />
                 </button>
             </div>
+
+            <button
+                className="
+                  flex items-center gap-2
+                  bg-common-100
+                  rounded-[6px]
+                  border border-coolNeutral-100
+                  px-3 py-2
+                  label-1
+                  text-coolNeutral-800
+                "
+            >
+                <img src="./icons/ic-plus.svg" alt="할 일 추가" className="w-5 h-5" />
+                Task 추가하기
+            </button>
         </div>
     );
 }

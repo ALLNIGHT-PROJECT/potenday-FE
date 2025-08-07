@@ -32,6 +32,7 @@
   --color-semantic-system-error: #FF5E47;
   /* Primary */
   --color-primary-600: #0BAFDC;
+  --color-primary-900: #045C74;
 }
 
 @layer utilities {
