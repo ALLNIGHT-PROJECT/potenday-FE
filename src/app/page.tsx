@@ -2,8 +2,7 @@
 
 import TodoCard from "@/features/dashboard/components/TodoCard";
 import UpcomingTodoCard from "@/features/dashboard/components/UpcomingTodoCard";
-import { redirect } from "next/navigation";
-import {useEffect, useRef, useState} from "react";
+import CommonDropdown from "@/components/ui/dropdown/CommonDropdown";
 
 export default function Home() {
     {/* redirect("/onboarding/welcome"); */}
@@ -172,98 +171,52 @@ function TaskHeaderBar() {
                 </button>
             </div>
 
-            <AddTaskDropdown />
-        </div>
-    );
-}
-
-function AddTaskDropdown() {
-    const [open, setOpen] = useState(false);
-    const dropdownRef = useRef<HTMLDivElement>(null);
-
-    // 바깥 클릭 시 닫힘
-    useEffect(() => {
-        function handleClickOutside(event: MouseEvent) {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-                setOpen(false);
-            }
-        }
-        if (open) document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [open]);
-
-    return (
-        <div className="relative flex flex-col items-start w-fit">
-            {/* Task 추가하기 버튼 */}
-            <button
-                type="button"
-                className="
-                    flex items-center gap-2
-                    bg-common-100
-                    rounded-[12px]
-                    border border-coolNeutral-100
-                    px-5 py-3
-                    label-1
-                    text-coolNeutral-800
-                    shadow
-                "
-                onClick={() => setOpen(v => !v)}
-            >
-                <img src="./icons/ic-plus.svg" alt="할 일 추가" className="w-6 h-6" />
-                Task 추가하기
-            </button>
-
-            {/* 드롭다운 */}
-            {open && (
-                <div
-                    ref={dropdownRef}
-                    className="
-                        absolute left-0 mt-[60px] min-w-[265px] bg-white
-                        rounded-[6px] shadow-lg z-10 animate-fade-in
-                        flex flex-col p-1
-                    "
-                >
-                    {/* 간편 추출하기 */}
+            {/* Task 추가하기 드롭다운 */}
+            <CommonDropdown
+                align="right"
+                offsetY={8}
+                renderButton={({ onClick }) => (
                     <button
                         type="button"
-                        className="group flex items-center w-full pl-4 pr-2 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition justify-between label-1 text-coolNeutral-700 font-semibold"
+                        className="flex items-center gap-2 bg-common-100 rounded-[12px] border border-coolNeutral-100 px-5 py-3 label-1 text-coolNeutral-800 shadow"
+                        onClick={onClick}
+                    >
+                        <img src="./icons/ic-plus.svg" alt="할 일 추가" className="w-6 h-6"/>
+                        Task 추가하기
+                    </button>
+                )}
+            >
+                <div className="min-w-[180px] flex flex-col p-[8px]">
+                    <button
+                        type="button"
+                        className="group flex items-center pl-4 pr-2 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition justify-between label-1 text-coolNeutral-700 font-semibold"
                         onClick={() => {
-                            setOpen(false);
+                            console.log("간편 추출하기");
                         }}
                     >
                         간편 추출하기
                         <img
                             src="/icons/ic-arrow-right.svg"
-                            alt="화살표"
+                            alt=">"
                             className="w-4 h-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
                         />
                     </button>
-                    {/* 직접 입력하기 */}
                     <button
                         type="button"
-                        className="group flex items-center w-full pl-4 pr-2 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition justify-between label-1 text-coolNeutral-700 font-semibold"
+                        className="group flex items-center pl-4 pr-2 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition justify-between label-1 text-coolNeutral-700 font-semibold"
                         onClick={() => {
-                            setOpen(false);
+                            console.log("직접 입력하기");
                         }}
                     >
                         직접 입력하기
                         <img
                             src="/icons/ic-arrow-right.svg"
-                            alt="화살표"
+                            alt=">"
                             className="w-4 h-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
                         />
                     </button>
                 </div>
-            )}
-
-            {/* 드롭다운 애니메이션 */}
-            <style>{`
-                @keyframes fade-in {
-                  from { opacity: 0; transform: translateY(-6px);}
-                  to { opacity: 1; transform: translateY(0);}
-                }
-                .animate-fade-in { animation: fade-in 0.15s ease; }
-            `}</style>
+            </CommonDropdown>
         </div>
     );
 }
