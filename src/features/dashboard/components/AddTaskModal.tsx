@@ -1,29 +1,14 @@
 'use client';
 
 import Image from "next/image";
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { ko } from "date-fns/locale";
-import { addMinutes } from 'date-fns';
-import React, {useRef, useState} from "react";
+import React, { useState } from "react";
+import LinkInputTags from "@/shared/components/LinkInputTags";
+import AppDateTimePicker from "@/shared/components/AppDateTimePicker";
 
 type AddTaskModalProps = {
     onCloseAction?: () => void;
     onSubmitAction?: () => void;
 };
-
-function ceilToStep(date: Date, step: number) {
-    const d = new Date(date);
-    d.setSeconds(0, 0);
-    const m = d.getMinutes();
-    const next = Math.ceil(m / step) * step;
-    if (next === m) return addMinutes(d, step);
-    d.setMinutes(next);
-    return d;
-}
-
-const minDt = ceilToStep(new Date(), 5);
 
 export default function AddTaskModal({ onCloseAction, onSubmitAction }: AddTaskModalProps) {
     const [name, setName] = useState('');
@@ -103,83 +88,11 @@ export default function AddTaskModal({ onCloseAction, onSubmitAction }: AddTaskM
                     {/* 기한 */}
                     <div className="mb-10">
                         <label className="label-1 text-coolNeutral-500 mb-2 block">*기한</label>
-                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
-                                <DateTimePicker
-                                    value={deadline}
-                                    onChange={setDeadline}
-                                    ampm={false}
-                                    minutesStep={5}
-                                    minDateTime={minDt}
-                                    format="yyyy-MM-dd HH:mm"
-                                    sx={{
-                                        /* 달력 오늘/선택 색 */
-                                        '& .MuiPickersDay-root.Mui-selected': {
-                                            backgroundColor: '#0BAFDC !important',
-                                            color: '#fff',
-                                        },
-                                        '& .MuiPickersDay-root.MuiPickersDay-today': {
-                                            borderColor: '#0BAFDC',
-                                        },
-
-                                        /* 👉 시간 선택 컬럼(시/분) 선택 색 */
-                                        '& .MuiMultiSectionDigitalClockSection-item.Mui-selected': {
-                                            backgroundColor: '#0BAFDC',
-                                            color: '#fff',
-                                        },
-                                        '& .MuiMultiSectionDigitalClockSection-item.Mui-selected:hover': {
-                                            backgroundColor: '#0BAFDC',
-                                        },
-
-                                        /* 액션 바 버튼 색 */
-                                        '& .MuiDialogActions-root .MuiButton-root': {
-                                            color: '#0BAFDC',
-                                            fontWeight: 700,
-                                        },
-                                    }}
-                                    slotProps={{
-                                        textField: {
-                                            fullWidth: true,
-                                            placeholder: '작업 기한을 선택해주세요',
-                                            size: 'small',
-                                            sx: {
-                                                borderRadius: '6px',
-                                                backgroundColor: '#F4F4F5',
-                                                fontSize: '16px',
-                                                '& input': { padding: '10px 16px' },
-                                                '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                                                '&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                                            },
-                                        },
-                                        day: {
-                                            sx: {
-                                                '&.Mui-selected': {
-                                                    backgroundColor: '#0BAFDC', // primary-600
-                                                    color: '#fff',
-                                                    '&:hover': {
-                                                        backgroundColor: '#099dc7',
-                                                    },
-                                                },
-                                                '&.MuiPickersDay-today': {
-                                                    borderColor: '#0BAFDC',
-                                                },
-                                            },
-                                        },
-                                        actionBar: {
-                                            actions: ['cancel', 'accept'],
-                                            sx: {
-                                                '& .MuiButton-root': {
-                                                    color: '#0BAFDC',
-                                                    fontWeight: 600,
-                                                    '&:hover': {
-                                                        backgroundColor: 'rgba(11, 175, 220, 0.1)',
-                                                    },
-                                                },
-                                            },
-                                        },
-                                    }}
-                                />
-                            </LocalizationProvider>
+                        <AppDateTimePicker
+                            value={deadline}
+                            onChange={setDeadline}
+                            minutesStep={5}
+                        />
                     </div>
 
                     {/* 중요도 */}
@@ -215,65 +128,6 @@ export default function AddTaskModal({ onCloseAction, onSubmitAction }: AddTaskM
                     </div>
                 </form>
             </div>
-        </div>
-    );
-}
-
-function LinkInputTags() {
-    const [links, setLinks] = useState<string[]>([]);
-    const [currentLink, setCurrentLink] = useState("");
-    const inputRef = useRef<HTMLInputElement>(null);
-
-    // 엔터 입력 시 등록
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter" && currentLink.trim() !== "") {
-            e.preventDefault();
-            setLinks([...links, currentLink.trim()]);
-            setCurrentLink("");
-        }
-    };
-
-    // X 클릭 시 삭제
-    const onRemoveLink = (idx: number) => {
-        setLinks(links.filter((_, i) => i !== idx));
-    };
-
-    return (
-        <div className="w-full">
-            {/* 등록된 링크 리스트 */}
-            {links.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-2">
-                    {links.map((link, idx) => (
-                        <div
-                            key={link}
-                            className="relative bg-coolNeutral-200 rounded-xl px-4 py-2 flex items-center max-w-full shadow-sm"
-                        >
-                            <span className="break-all body-3-700 text-coolNeutral-900">{link}</span>
-                            <button
-                                onClick={() => onRemoveLink(idx)}
-                                className="ml-2 absolute top-1 right-1 w-6 h-6 flex items-center justify-center rounded-full hover:bg-coolNeutral-300 transition"
-                                aria-label="링크 삭제"
-                                type="button"
-                            >
-                                <svg width="16" height="16" viewBox="0 0 16 16">
-                                    <circle cx="8" cy="8" r="8" fill="#E4E4E7" />
-                                    <path d="M5.5 5.5l5 5M10.5 5.5l-5 5" stroke="#6D6E71" strokeWidth="1.5" strokeLinecap="round"/>
-                                </svg>
-                            </button>
-                        </div>
-                    ))}
-                </div>
-            )}
-
-            {/* 입력창 */}
-            <input
-                ref={inputRef}
-                className="w-full bg-coolNeutral-100 rounded-[6px] px-4 py-2 body-3-500 text-coolNeutral-700 focus:outline-none"
-                value={currentLink}
-                onChange={e => setCurrentLink(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="링크를 이곳에 붙여넣어주세요"
-            />
         </div>
     );
 }
