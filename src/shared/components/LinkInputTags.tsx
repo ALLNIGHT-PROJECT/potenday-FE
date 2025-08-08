@@ -48,8 +48,9 @@ export default function LinkInputTags() {
 
             {/* 입력창 */}
             <input
+                type="url"
                 ref={inputRef}
-                className="w-full bg-coolNeutral-100 rounded-[6px] px-4 py-2 body-3-500 text-coolNeutral-700 focus:outline-none"
+                className="w-full bg-white border border-coolNeutral-300 rounded-[6px] px-4 py-2 body-3-500 placeholder-coolNeutral-600 text-coolNeutral-700 focus:outline-none"
                 value={currentLink}
                 onChange={e => setCurrentLink(e.target.value)}
                 onKeyDown={handleKeyDown}
