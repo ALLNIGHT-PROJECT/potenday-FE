@@ -109,7 +109,7 @@ export default function Home() {
                     </SortableContext>
 
                     {/* ✅ 크기 고정 Overlay */}
-                    <DragOverlay>
+                    <DragOverlay dropAnimation={null}>
                         {activeCard ? (
                             <div
                                 style={{
@@ -120,7 +120,13 @@ export default function Home() {
                             >
                                 <TodoCard
                                     {...activeCard}
-                                    // 핸들 없어도 됨(Overlay는 드래그 진행 중)
+                                    containerStyle={{
+                                        width: overlaySize?.width,
+                                        height: overlaySize?.height,
+                                    }}
+                                    containerClassName="transform-gpu"
+                                    isDragging
+                                    renderHandle={undefined}
                                 />
                             </div>
                         ) : null}

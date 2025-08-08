@@ -28,6 +28,7 @@ type TodoDetailProps = {
     tasks: Task[];
     references: Reference[];
     renderHandle?: (opts: { className?: string }) => React.ReactNode;
+    isDragging?: boolean;
 };
 
 type TodoHeaderProps = {
@@ -54,12 +55,15 @@ export default function TodoCard({
    description,
    tasks,
    references,
-   renderHandle
+   renderHandle,
+   isDragging
 }: TodoDetailProps) {
     return (
         <div className="flex bg-blue-100 rounded-[20px] p-3 gap-3 w-auto">
             {/* 왼쪽: 하얀 카드 (메인) */}
-            <div className="flex-1 bg-white rounded-[16px] shadow-md p-4">
+            <div className={`flex-1 bg-white rounded-[16px] shadow-md p-4 transition-all ${
+                isDragging ? "border-3 border-gray-300" : "border border-transparent"
+            }`}>
                 <TodoHeader project={project} title={title} progress={progress} renderHandle={renderHandle} />
                 <div className="mt-4">
                     <TodoMetaInfo importance={importance} estimatedTime={estimatedTime} deadline={deadline} />
