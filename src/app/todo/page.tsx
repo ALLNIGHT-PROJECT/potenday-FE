@@ -14,6 +14,19 @@ import { DragOverlay, DndContext, DragStartEvent, DragEndEvent } from "@dnd-kit/
 import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
 import SortableTodoCard from "@/features/dashboard/components/SortableTodoCard";
 import SortableUpcomingCard from "@/features/dashboard/components/SortableUpcomingCard"
+import ChatSideModal from "@/features/dashboard/components/ChatSideModal";
+// Types
+type ChatTab = {
+    id: string;
+    label: string;
+    active?: boolean;
+};
+
+type ChatItem = {
+    id: string;
+    title: string;
+    unread?: number;
+};
 
 
 type UpcomingCardData = {
@@ -246,6 +259,27 @@ export default function Home() {
 function TaskHeaderBar() {
     const [showModal, setShowModal] = useState(false);
 
+    const [chatModalOpen, setChatModalOpen] = useState(false);
+    const tabs = useMemo<ChatTab[]>(
+        () => [
+            { id: "t0", label: "Liquid Glass 사전작업", active: true },
+            { id: "t1", label: "새로운 채팅 1" },
+            { id: "t2", label: "새로운 채팅 2" },
+        ],
+        []
+    );
+    const chats = useMemo<ChatItem[]>(
+        () => [
+            { id: "c1", title: "기획 업무 도움요청", unread: 2 },
+            { id: "c2", title: "개발 업무 도움요청" },
+            { id: "c3", title: "Liquid Glass 사전작업" },
+            { id: "c4", title: "새로운 채팅 1" },
+            { id: "c5", title: "새로운 채팅 2" },
+        ],
+        []
+    );
+
+
     const router = useRouter();
 
     return (
@@ -277,7 +311,10 @@ function TaskHeaderBar() {
                     </span>
                 </div>
                 {/* AI 채팅 열기 */}
-                <button className="flex items-center text-primary-900 label-1">
+                <button
+                    className="flex items-center text-primary-900 label-1"
+                    onClick={() => setChatModalOpen(true)}
+                >
                     AI 채팅 열기
                     <img src="icons/ic-dropdown.svg" alt="Dropdown" className="w-4 h-4 ml-1" />
                 </button>
@@ -334,6 +371,8 @@ function TaskHeaderBar() {
             {showModal && (
                 <AddTaskModal onCloseAction={() => setShowModal(false)} />
             )}
+
+            <ChatSideModal open={chatModalOpen} onClose={() => setChatModalOpen(false)} tabs={tabs} chats={chats}/>
         </div>
     );
 }
