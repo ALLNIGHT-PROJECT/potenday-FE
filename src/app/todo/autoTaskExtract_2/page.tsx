@@ -1,16 +1,13 @@
 'use client';
 
-import Image from "next/image";
-import React, { useState } from "react";
+import {useRouter} from "next/navigation";
+import React, {useState} from "react";
 import LinkInputTags from "@/shared/components/LinkInputTags";
 import AppDateTimePicker from "@/shared/components/AppDateTimePicker";
 
-type AddTaskModalProps = {
-    onCloseAction?: () => void;
-    onSubmitAction?: () => void;
-};
+export default function OnboardingAutoTaskExtract_1Page() {
+    const router = useRouter();
 
-export default function AddTaskModal({ onCloseAction, onSubmitAction }: AddTaskModalProps) {
     const [name, setName] = useState('');
     const [desc, setDesc] = useState('');
     const [deadline, setDeadline] = useState<Date | null>(null);
@@ -18,48 +15,40 @@ export default function AddTaskModal({ onCloseAction, onSubmitAction }: AddTaskM
 
     const canSubmit = name.trim().length > 0 && !!deadline && importance.trim().length > 0;
 
+    const handleClick = () => {
+        // 추후 서버 요청으로 대체 가능
+        setTimeout(() => {
+            router.push("/")  // 여기서 결과 페이지나 다음 스텝으로 이동
+        }, 3000)
+    }
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/10">
-            <div
-                className="bg-white rounded-2xl shadow-xl w-[80%] p-10 relative max-h-[80vh] overflow-y-auto"
-            >
-                {/* 제목 */}
-                <div className="flex items-center mb-[36px]">
-                    <h2 className="headline-1 text-coolNeutral-700">새로운 할 일</h2>
+        <div className="min-h-screen flex items-center justify-center bg-white p-4 relative">
 
-                    <div className="flex-1" />
+            <div className="min-h-[300px] flex flex-col bg-white p-4 max-w-4xl w-full">
 
-                    <button
-                        type="button"
-                        disabled={!canSubmit}
-                        className={`
-                            label-1 px-4 py-2 rounded-[6px] mr-4
-                            transition
-                            ${canSubmit
-                            ? "bg-primary-600 text-common-100 hover:bg-primary-700"
-                            : "bg-coolNeutral-250 text-coolNeutral-700 cursor-not-allowed"
-                        }
-                        `}
-                        onClick={canSubmit ? onSubmitAction : undefined}
-                    >
-                        등록하기
-                    </button>
+                {/* 상단 헤더: 왼쪽에 2/2과 제목, 오른쪽에 버튼 */}
+                <div className="flex flex-col mb-8">
+                    <div className="body-2-500 text-coolNeutral-600 mb-3">2/2</div>
+                    <div className="flex justify-between">
+                        <h1 className="headline-1 font-semibold">할 일 정보를 수정 후 추가해보세요!</h1>
 
-                    <button
-                        type="button"
-                        onClick={ onCloseAction }
-                        className="
-                            w-10 h-10
-                            flex items-center justify-center
-                            rounded-lg
-                            border border-coolNeutral-250
-                            bg-white
-                            hover:bg-coolNeutral-100
-                            transition
-                          "
-                    >
-                        <Image src="/icons/ic-close.svg" alt="닫기" width={16} height={16} />
-                    </button>
+                        <button
+                            type="button"
+                            disabled={!canSubmit}
+                            className={`
+                                label-1 px-4 py-2 rounded-[6px]
+                                transition
+                                ${canSubmit
+                                ? "bg-primary-600 text-common-100 hover:bg-primary-700"
+                                : "bg-coolNeutral-250 text-coolNeutral-700 cursor-not-allowed"
+                            }
+                            `}
+                            onClick={ canSubmit ? handleClick : undefined }
+                        >
+                            할 일로 추가할게요
+                        </button>
+                    </div>
                 </div>
 
                 <form className="flex flex-col">
@@ -129,5 +118,6 @@ export default function AddTaskModal({ onCloseAction, onSubmitAction }: AddTaskM
                 </form>
             </div>
         </div>
-    );
+
+    )
 }

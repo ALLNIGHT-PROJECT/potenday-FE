@@ -1,6 +1,6 @@
 'use client';
 
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function OnboardingAutoTaskExtract_1Page() {
@@ -16,7 +16,7 @@ export default function OnboardingAutoTaskExtract_1Page() {
 
         // 추후 서버 요청으로 대체 가능
         setTimeout(() => {
-            router.push("/")  // 여기서 결과 페이지나 다음 스텝으로 이동
+            router.replace("/todo/autoTaskExtract_2")  // 여기서 결과 페이지나 다음 스텝으로 이동
         }, 3000)
     }
 
@@ -36,8 +36,8 @@ export default function OnboardingAutoTaskExtract_1Page() {
                 {/* 상단 헤더: 왼쪽에 1/2과 제목, 오른쪽에 버튼 */}
                 <div className="flex items-center justify-between mb-8">
                     <div className="flex flex-col">
-                        <div className="text-xl text-gray-500 mb-3">1/2</div>
-                        <h1 className="text-2xl font-semibold">5초면 끝, 할 일을 추출할게요</h1>
+                        <div className="body-2-500 text-coolNeutral-600 mb-3">1/2</div>
+                        <h1 className="headline-1 font-semibold">5초면 끝, 할 일을 추출할게요</h1>
                     </div>
                     <button
                         className={`px-5 py-2 rounded-md font-semibold transition ${
