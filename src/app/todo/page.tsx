@@ -10,70 +10,122 @@ import Image from "next/image";
 import NotificationDropdown from "@/components/ui/dropdown/NotificationDropdown";
 import AccountDropdown from "@/components/ui/dropdown/AccountDropdown";
 
+import { DragOverlay, DndContext, DragStartEvent, DragEndEvent } from "@dnd-kit/core";
+import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
+import SortableTodoCard from "@/features/dashboard/components/SortableTodoCard";
+
+
+
+type TodoCardData = {
+    id: string;
+    project: string;
+    title: string;
+    importance: string;
+    estimatedTime: string;
+    deadline: string;
+    progress: number;
+    statusLabel: string;
+    description: string;
+    tasks: { id: number; name: string; estimatedTime: string; completed: boolean }[];
+    references: { name: string; url: string }[];
+};
+
 export default function Home() {
+    const [cards, setCards] = useState<TodoCardData[]>([
+        {
+            id: "card-1",
+            project: "프로젝트 A",
+            title: "할 일 제목 1",
+            importance: "높음",
+            estimatedTime: "2시간",
+            deadline: "2023-12-31",
+            progress: 75,
+            statusLabel: "진행 중",
+            description: "이 할 일에 대한 자세한 설명입니다.",
+            tasks: [
+                { id: 1, name: "하위 작업 1", estimatedTime: "1h", completed: true },
+                { id: 2, name: "하위 작업 2", estimatedTime: "1.5h", completed: false },
+                { id: 3, name: "하위 작업 3", estimatedTime: "2h", completed: false },
+            ],
+            references: [
+                { name: "참조 문서 1", url: "https://example.com/doc1" },
+                { name: "참조 문서 2", url: "https://example.com/doc2" },
+            ],
+        },
+        {
+            id: "card-2",
+            project: "프로젝트 A",
+            title: "할 일 제목 2",
+            importance: "높음",
+            estimatedTime: "2시간",
+            deadline: "2023-12-31",
+            progress: 40,
+            statusLabel: "대기",
+            description: "설명 2",
+            tasks: [],
+            references: [],
+        },
+        {
+            id: "card-3",
+            project: "프로젝트 A",
+            title: "할 일 제목 3",
+            importance: "보통",
+            estimatedTime: "1시간",
+            deadline: "2023-12-31",
+            progress: 10,
+            statusLabel: "대기",
+            description: "설명 3",
+            tasks: [],
+            references: [],
+        },
+    ]);
+
+    const [activeId, setActiveId] = useState<string | null>(null);
+    const [overlaySize, setOverlaySize] = useState<{width:number; height:number} | null>(null);
+
+    const onDragStart = (e: DragStartEvent) => {
+        setActiveId(String(e.active.id));
+        const r = e.active.rect?.current?.initial;
+        if (r) setOverlaySize({ width: r.width, height: r.height });
+    };
+
+    const onDragEnd = (e: DragEndEvent) => {
+        const { active, over } = e;
+        if (!over || active.id === over.id) return;
+        const oldIndex = cards.findIndex((c) => c.id === String(active.id));
+        const newIndex = cards.findIndex((c) => c.id === String(over.id));
+        setCards((prev) => arrayMove(prev, oldIndex, newIndex));
+    };
+    const activeCard = cards.find(c => c.id === activeId);
     return (
         <div className="flex space-x-5">
             <div className="flex-1 flex-col pb-[30px] px-[30px] space-y-4 items-start">
                 <TaskHeaderBar />
-                <TodoCard
-                    project="프로젝트 A"
-                    title="할 일 제목"
-                    importance="높음"
-                    estimatedTime="2시간"
-                    deadline="2023-12-31"
-                    progress={75}
-                    statusLabel="진행 중"
-                    description="이 할 일에 대한 자세한 설명입니다."
-                    tasks={[
-                        { id: 1, name: "하위 작업 1", estimatedTime: "1h", completed: true },
-                        { id: 2, name: "하위 작업 2", estimatedTime: "1.5h", completed: false },
-                        { id: 2, name: "하위 작업 3", estimatedTime: "2h", completed: false },
-                    ]}
-                    references={[
-                        { name: "참조 문서 1", url: "https://example.com/doc1" },
-                        { name: "참조 문서 2", url: "https://example.com/doc2" },
-                    ]}
-                />
+                <DndContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
+                    <SortableContext items={cards.map(c => c.id)} strategy={verticalListSortingStrategy}>
+                        {cards.map(card => (
+                            <SortableTodoCard key={card.id} id={card.id} {...card} />
+                        ))}
+                    </SortableContext>
 
-                <TodoCard
-                    project="프로젝트 A"
-                    title="할 일 제목"
-                    importance="높음"
-                    estimatedTime="2시간"
-                    deadline="2023-12-31"
-                    progress={75}
-                    statusLabel="진행 중"
-                    description="이 할 일에 대한 자세한 설명입니다."
-                    tasks={[
-                        { id: 1, name: "하위 작업 1", estimatedTime: "1h", completed: true },
-                        { id: 2, name: "하위 작업 2", estimatedTime: "1.5h", completed: false },
-                        { id: 2, name: "하위 작업 3", estimatedTime: "2h", completed: false },
-                    ]}
-                    references={[
-                        { name: "참조 문서 1", url: "https://example.com/doc1" },
-                        { name: "참조 문서 2", url: "https://example.com/doc2" },
-                    ]}
-                />
-
-                <TodoCard
-                    project="프로젝트 A"
-                    title="할 일 제목"
-                    importance="높음"
-                    estimatedTime="2시간"
-                    deadline="2023-12-31"
-                    progress={75}
-                    statusLabel="진행 중"
-                    description="이 할 일에 대한 자세한 설명입니다."
-                    tasks={[
-                        { id: 1, name: "하위 작업 1", estimatedTime: "1h", completed: true },
-                        { id: 2, name: "하위 작업 2", estimatedTime: "1.5h", completed: false },
-                        { id: 2, name: "하위 작업 3", estimatedTime: "2h", completed: false },
-                    ]}
-                    references={[
-                        { name: "참조 문서 1", url: "https://example.com/doc1" },
-                        { name: "참조 문서 2", url: "https://example.com/doc2" },
-                    ]}
-                />
+                    {/* ✅ 크기 고정 Overlay */}
+                    <DragOverlay>
+                        {activeCard ? (
+                            <div
+                                style={{
+                                    width: overlaySize?.width,
+                                    height: overlaySize?.height,
+                                }}
+                                className="w-full" // 보험
+                            >
+                                <TodoCard
+                                    {...activeCard}
+                                    // 핸들 없어도 됨(Overlay는 드래그 진행 중)
+                                />
+                            </div>
+                        ) : null}
+                    </DragOverlay>
+                </DndContext>
             </div>
 
             <div className="flex-col space-y-4 items-start p-[30px] rounded-tl-2xl border border-gray-200">

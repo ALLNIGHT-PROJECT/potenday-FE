@@ -27,12 +27,14 @@ type TodoDetailProps = {
     description: string;
     tasks: Task[];
     references: Reference[];
+    renderHandle?: (opts: { className?: string }) => React.ReactNode;
 };
 
 type TodoHeaderProps = {
     project: string;
     title: string;
-    progress: number; // 0~100
+    progress: number; // 0~100,
+    renderHandle?: (opts: { className?: string }) => React.ReactNode;
 };
 
 type TodoMetaInfoProps = {
@@ -52,12 +54,13 @@ export default function TodoCard({
    description,
    tasks,
    references,
+   renderHandle
 }: TodoDetailProps) {
     return (
         <div className="flex bg-blue-100 rounded-[20px] p-3 gap-3 w-auto">
             {/* 왼쪽: 하얀 카드 (메인) */}
             <div className="flex-1 bg-white rounded-[16px] shadow-md p-4">
-                <TodoHeader project={project} title={title} progress={progress} />
+                <TodoHeader project={project} title={title} progress={progress} renderHandle={renderHandle} />
                 <div className="mt-4">
                     <TodoMetaInfo importance={importance} estimatedTime={estimatedTime} deadline={deadline} />
                 </div>
@@ -141,20 +144,25 @@ function TodoHeader({
     project,
     title,
     progress,
+    renderHandle
 }: TodoHeaderProps) {
     return (
         <div className="flex items-center justify-between w-full">
             {/* 왼쪽: 드래그 핸들 + 배지 + 제목 */}
             <div className="flex items-center gap-2">
-                <img src="/icons/ic-drag-handle.svg" alt="드래그" />
+                {renderHandle ? (
+                    renderHandle({ className: "w-4 h-4 cursor-grab active:cursor-grabbing touch-none select-none" })
+                ) : (
+                    <img src="/icons/ic-drag-handle.svg" alt="드래그" className="w-4 h-4" />
+                )}
                 {/* 프로젝트 배지 */}
                 <span className="bg-blue-700 caption-2 text-common-100 font-semibold px-2 py-1 rounded-[6px]">
-          {project}
-        </span>
+                  {project}
+                </span>
                 {/* 제목 */}
                 <span className="body-2-700 ml-1">
-          {title}
-        </span>
+                  {title}
+                </span>
             </div>
             {/* 오른쪽: 진행률 */}
             <div className="flex items-center bg-blue-100/60 px-2 py-1 rounded-lg min-w-[160px]">
