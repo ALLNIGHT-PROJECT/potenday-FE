@@ -3,6 +3,8 @@
 import { cn } from '@/lib/utils';
 import CommonDropdown from "@/components/ui/dropdown/CommonDropdown";
 
+type UpcomingRenderHandle = (opts: { className?: string }) => React.ReactNode;
+
 type UpcomingTodoTask = {
     id: number;
     name: string;
@@ -16,11 +18,15 @@ type UpcomingTodoDetailProps = {
     estimatedTime: string;
     deadline: string;
     tasks: UpcomingTodoTask[];
+    renderHandle?: UpcomingRenderHandle;
+    containerClassName?: string;
+    containerStyle?: React.CSSProperties;
 };
 
 type UpcomingTodoHeaderProps = {
     project: string;
     title: string;
+    renderHandle?: UpcomingRenderHandle;
 };
 
 type UpcomingTodoMetaInfoProps = {
@@ -36,17 +42,23 @@ export default function UpcomingTodoCard({
      estimatedTime,
      deadline,
      tasks,
+     renderHandle,
+     isDragging
 }: UpcomingTodoDetailProps) {
     return (
-        <div className="bg-white rounded-[16px] shadow-md p-4 flex flex-col flex-none w-auto min-w-[360px]">
-            <UpcomingTodoHeader project={project} title={title} />
+        <div
+            className={`bg-white rounded-[16px] shadow-md p-4 flex flex-col flex-none w-auto min-w-[360px] ${
+                isDragging ? "border-3 border-gray-300" : "border border-transparent"
+            }`}
+        >
+            <UpcomingTodoHeader project={project} title={title} renderHandle={renderHandle}/>
             <div className="mt-4">
-                <UpcomingTodoMetaInfo importance={importance} estimatedTime={estimatedTime} deadline={deadline} />
+                <UpcomingTodoMetaInfo importance={importance} estimatedTime={estimatedTime} deadline={deadline}/>
             </div>
             <div className="mt-6">
-                <UpcomingTodoTaskList tasks={tasks} />
+                <UpcomingTodoTaskList tasks={tasks}/>
             </div>
-            <AddTodayTaskButton />
+            <AddTodayTaskButton/>
         </div>
     );
 }
@@ -54,23 +66,24 @@ export default function UpcomingTodoCard({
 function UpcomingTodoHeader({
     project,
     title,
+    renderHandle
 }: UpcomingTodoHeaderProps) {
     return (
         <div className="flex items-center justify-between w-full">
             {/* 왼쪽: 드래그 핸들 + 배지 + 제목 */}
             <div className="flex items-center gap-2">
-                <img src="/icons/ic-drag-handle.svg" alt="드래그" />
-                {/* 프로젝트 배지 */}
-                <span className="bg-blue-700 caption-2 text-common-100 font-semibold px-2 py-1 rounded-[6px]">
-                    {project}
-                </span>
+                {renderHandle ? (
+                    renderHandle({ className: "w-4 h-4 cursor-grab active:cursor-grabbing touch-none select-none" })
+                ) : (
+                    <img src="/icons/ic-drag-handle.svg" alt="드래그" className="w-4 h-4" />
+                )}
                 {/* 제목 */}
-                <span className="body-2-700 ml-1">
+                <span className="body-2-700 ml-1 flex-1 min-w-0 whitespace-nowrap">
                     {title}
                 </span>
             </div>
             <div className="flex flex-col min-w-[230px] max-w-xs pt-2">
-            {/* ic-more를 우측 상단에 완전히 붙이기 위한 flex 컨테이너 */}
+                {/* ic-more를 우측 상단에 완전히 붙이기 위한 flex 컨테이너 */}
                 <div className="flex justify-end items-start w-full">
                     <CommonDropdown
                         align="right"
