@@ -1,8 +1,11 @@
 'use client';
 
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import { format } from "date-fns";
+import Image from "next/image";
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { ko } from "date-fns/locale";
+import { addMinutes } from 'date-fns';
 import React, {useRef, useState} from "react";
 
 type AddTaskModalProps = {
@@ -10,10 +13,22 @@ type AddTaskModalProps = {
     onSubmitAction?: () => void;
 };
 
+function ceilToStep(date: Date, step: number) {
+    const d = new Date(date);
+    d.setSeconds(0, 0);
+    const m = d.getMinutes();
+    const next = Math.ceil(m / step) * step;
+    if (next === m) return addMinutes(d, step);
+    d.setMinutes(next);
+    return d;
+}
+
+const minDt = ceilToStep(new Date(), 5);
+
 export default function AddTaskModal({ onCloseAction, onSubmitAction }: AddTaskModalProps) {
     const [name, setName] = useState('');
     const [desc, setDesc] = useState('');
-    const [deadline, setDeadline] = React.useState<Date | undefined>(new Date());
+    const [deadline, setDeadline] = useState<Date | null>(null);
     const [importance, setImportance] = useState('중간');
 
     const canSubmit = name.trim().length > 0 && !!deadline && importance.trim().length > 0;
@@ -21,16 +36,19 @@ export default function AddTaskModal({ onCloseAction, onSubmitAction }: AddTaskM
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/10">
             <div
-                className="bg-white rounded-2xl shadow-xl w-[600px] p-10 relative"
+                className="bg-white rounded-2xl shadow-xl w-[80%] p-10 relative max-h-[80vh] overflow-y-auto"
             >
                 {/* 제목 */}
-                <div className="flex justify-between items-center mb-[36px]">
+                <div className="flex items-center mb-[36px]">
                     <h2 className="headline-1 text-coolNeutral-700">새로운 할 일</h2>
+
+                    <div className="flex-1" />
+
                     <button
                         type="button"
                         disabled={!canSubmit}
                         className={`
-                            label-1 px-4 py-2 rounded-[6px]
+                            label-1 px-4 py-2 rounded-[6px] mr-4
                             transition
                             ${canSubmit
                             ? "bg-primary-600 text-common-100 hover:bg-primary-700"
@@ -40,6 +58,22 @@ export default function AddTaskModal({ onCloseAction, onSubmitAction }: AddTaskM
                         onClick={canSubmit ? onSubmitAction : undefined}
                     >
                         등록하기
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={ onCloseAction }
+                        className="
+                            w-10 h-10
+                            flex items-center justify-center
+                            rounded-lg
+                            border border-coolNeutral-250
+                            bg-white
+                            hover:bg-coolNeutral-100
+                            transition
+                          "
+                    >
+                        <Image src="/icons/ic-close.svg" alt="닫기" width={16} height={16} />
                     </button>
                 </div>
 
@@ -69,27 +103,83 @@ export default function AddTaskModal({ onCloseAction, onSubmitAction }: AddTaskM
                     {/* 기한 */}
                     <div className="mb-10">
                         <label className="label-1 text-coolNeutral-500 mb-2 block">*기한</label>
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <button
-                                    type="button"
-                                    className={`
-                                        w-full bg-coolNeutral-100 rounded-[6px] px-4 py-2 body-3-500
-                                        text-coolNeutral-900 text-left focus:outline-none
-                                        ${!deadline ? 'text-coolNeutral-400' : ''}
-                                    `}
-                                >
-                                    {deadline ? format(deadline, "yyyy-MM-dd") : "작업 기한을 선택해주세요"}
-                                </button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                                <Calendar
-                                    mode="single"
-                                    selected={deadline}
-                                    onSelect={setDeadline}
+                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+                                <DateTimePicker
+                                    value={deadline}
+                                    onChange={setDeadline}
+                                    ampm={false}
+                                    minutesStep={5}
+                                    minDateTime={minDt}
+                                    format="yyyy-MM-dd HH:mm"
+                                    sx={{
+                                        /* 달력 오늘/선택 색 */
+                                        '& .MuiPickersDay-root.Mui-selected': {
+                                            backgroundColor: '#0BAFDC !important',
+                                            color: '#fff',
+                                        },
+                                        '& .MuiPickersDay-root.MuiPickersDay-today': {
+                                            borderColor: '#0BAFDC',
+                                        },
+
+                                        /* 👉 시간 선택 컬럼(시/분) 선택 색 */
+                                        '& .MuiMultiSectionDigitalClockSection-item.Mui-selected': {
+                                            backgroundColor: '#0BAFDC',
+                                            color: '#fff',
+                                        },
+                                        '& .MuiMultiSectionDigitalClockSection-item.Mui-selected:hover': {
+                                            backgroundColor: '#0BAFDC',
+                                        },
+
+                                        /* 액션 바 버튼 색 */
+                                        '& .MuiDialogActions-root .MuiButton-root': {
+                                            color: '#0BAFDC',
+                                            fontWeight: 700,
+                                        },
+                                    }}
+                                    slotProps={{
+                                        textField: {
+                                            fullWidth: true,
+                                            placeholder: '작업 기한을 선택해주세요',
+                                            size: 'small',
+                                            sx: {
+                                                borderRadius: '6px',
+                                                backgroundColor: '#F4F4F5',
+                                                fontSize: '16px',
+                                                '& input': { padding: '10px 16px' },
+                                                '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                                '&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                            },
+                                        },
+                                        day: {
+                                            sx: {
+                                                '&.Mui-selected': {
+                                                    backgroundColor: '#0BAFDC', // primary-600
+                                                    color: '#fff',
+                                                    '&:hover': {
+                                                        backgroundColor: '#099dc7',
+                                                    },
+                                                },
+                                                '&.MuiPickersDay-today': {
+                                                    borderColor: '#0BAFDC',
+                                                },
+                                            },
+                                        },
+                                        actionBar: {
+                                            actions: ['cancel', 'accept'],
+                                            sx: {
+                                                '& .MuiButton-root': {
+                                                    color: '#0BAFDC',
+                                                    fontWeight: 600,
+                                                    '&:hover': {
+                                                        backgroundColor: 'rgba(11, 175, 220, 0.1)',
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    }}
                                 />
-                            </PopoverContent>
-                        </Popover>
+                            </LocalizationProvider>
                     </div>
 
                     {/* 중요도 */}
@@ -138,11 +228,8 @@ function LinkInputTags() {
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter" && currentLink.trim() !== "") {
             e.preventDefault();
-            // 중복, 빈 문자열 방지
-            if (!links.includes(currentLink.trim())) {
-                setLinks([...links, currentLink.trim()]);
-                setCurrentLink("");
-            }
+            setLinks([...links, currentLink.trim()]);
+            setCurrentLink("");
         }
     };
 
