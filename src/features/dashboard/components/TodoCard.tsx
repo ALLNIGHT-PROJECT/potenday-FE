@@ -159,10 +159,6 @@ function TodoHeader({
                 ) : (
                     <img src="/icons/ic-drag-handle.svg" alt="드래그" className="w-4 h-4" />
                 )}
-                {/* 프로젝트 배지 */}
-                <span className="bg-blue-700 caption-2 text-common-100 font-semibold px-2 py-1 rounded-[6px]">
-                  {project}
-                </span>
                 {/* 제목 */}
                 <span className="body-2-700 ml-1">
                   {title}
