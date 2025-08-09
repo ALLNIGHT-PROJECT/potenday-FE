@@ -2,33 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import CommonDropdown from "@/components/ui/dropdown/CommonDropdown";
-
-
-type UpcomingTodoTask = {
-    id: number;
-    name: string;
-    estimatedTime: string;
-};
-
-type UpcomingTodoDetailProps = {
-    project: string;
-    title: string;
-    importance: '낮음' | '보통' | '높음';
-    estimatedTime: string;
-    deadline: string;
-    tasks: UpcomingTodoTask[];
-};
-
-type UpcomingTodoHeaderProps = {
-    project: string;
-    title: string;
-};
-
-type UpcomingTodoMetaInfoProps = {
-    importance: '낮음' | '보통' | '높음';
-    estimatedTime: string;
-    deadline: string;
-};
+import {UpcomingTodoDetailProps, UpcomingTodoHeaderProps, UpcomingTodoMetaInfoProps, UpcomingTodoTask} from "../type"
 
 export default function UpcomingTodoCard({
      project,

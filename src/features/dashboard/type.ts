@@ -15,3 +15,29 @@ export type EditTaskValue = {
     actionItems: ActionItem[];
     links: string[]; // LinkInputTags가 제어형으로 받을 링크 목록
 };
+
+export type UpcomingTodoTask = {
+    id: number;
+    name: string;
+    estimatedTime: string;
+};
+
+export type UpcomingTodoDetailProps = {
+    project: string;
+    title: string;
+    importance: '낮음' | '보통' | '높음';
+    estimatedTime: string;
+    deadline: string;
+    tasks: UpcomingTodoTask[];
+};
+
+export type UpcomingTodoHeaderProps = {
+    project: string;
+    title: string;
+};
+
+export type UpcomingTodoMetaInfoProps = {
+    importance: '낮음' | '보통' | '높음';
+    estimatedTime: string;
+    deadline: string;
+};
