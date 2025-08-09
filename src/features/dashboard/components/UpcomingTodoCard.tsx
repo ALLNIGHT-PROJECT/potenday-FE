@@ -47,9 +47,7 @@ export default function UpcomingTodoCard({
 }: UpcomingTodoDetailProps) {
     return (
         <div
-            className={`bg-white rounded-[16px] shadow-md p-4 flex flex-col flex-none w-auto min-w-[360px] ${
-                isDragging ? "border-3 border-gray-300" : "border border-transparent"
-            }`}
+            className={`bg-white rounded-[16px] shadow-md p-4 flex flex-col flex-none w-auto min-w-[360px]`}
         >
             <UpcomingTodoHeader project={project} title={title} renderHandle={renderHandle}/>
             <div className="mt-4">
@@ -65,18 +63,11 @@ export default function UpcomingTodoCard({
 
 function UpcomingTodoHeader({
     project,
-    title,
-    renderHandle
+    title
 }: UpcomingTodoHeaderProps) {
     return (
         <div className="flex items-center justify-between w-full">
-            {/* 왼쪽: 드래그 핸들 + 배지 + 제목 */}
             <div className="flex items-center gap-2">
-                {renderHandle ? (
-                    renderHandle({ className: "w-4 h-4 cursor-grab active:cursor-grabbing touch-none select-none" })
-                ) : (
-                    <img src="/icons/ic-drag-handle.svg" alt="드래그" className="w-4 h-4" />
-                )}
                 {/* 제목 */}
                 <span className="body-2-700 ml-1 flex-1 min-w-0 whitespace-nowrap">
                     {title}

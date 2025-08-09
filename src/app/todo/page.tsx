@@ -10,7 +10,6 @@ import AddTaskModal from "@/features/dashboard/components/AddTaskModal";
 import { DragOverlay, DndContext, DragStartEvent, DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
 import SortableTodoCard from "@/features/dashboard/components/SortableTodoCard";
-import SortableUpcomingCard from "@/features/dashboard/components/SortableUpcomingCard"
 import ChatSideModal from "@/features/dashboard/components/ChatSideModal";
 import CommonModal from "@/components/ui/modal/CommonModal";
 import EditTaskModal from "@/features/dashboard/components/EditTaskModal";
@@ -262,45 +261,15 @@ export default function Home() {
                     )}
                 </div>
 
-                <DndContext onDragStart={onUpcomingDragStart} onDragEnd={onUpcomingDragEnd}>
-                    <SortableContext items={upcoming.map(u => u.id)} strategy={verticalListSortingStrategy}>
-                        {upcoming.map((card) => (
-                            <SortableUpcomingCard
-                                key={card.id}
-                                id={card.id}
-                                {...card}
-                                lockedSize={activeUpcomingId === card.id ? upOverlaySize : null}
-                            />
-                        ))}
-                    </SortableContext>
-
-                    {/* ✅ 오른쪽도 Overlay로 부드럽게 */}
-                    <DragOverlay dropAnimation={null}>
-                        {activeUpcomingCard ? (
-                            <div
-                                style={{
-                                    width: upOverlaySize?.width,       // 드래그 시작 시 저장한 픽셀 폭
-                                    height: upOverlaySize?.height,     // 드래그 시작 시 저장한 픽셀 높이
-                                    boxSizing: "border-box",           // 패딩/보더 포함해 동일하게
-                                }}
-                                className="w-full"
-                            >
-                                <UpcomingTodoCard
-                                    {...activeUpcomingCard}
-                                    containerStyle={{
-                                        width: overlaySize?.width,
-                                        height: overlaySize?.height,
-                                    }}
-                                    containerClassName="transform-gpu"
-                                    isDragging
-                                    renderHandle={undefined}
-                                />
-                            </div>
-                        ) : null}
-                    </DragOverlay>
-                </DndContext>
+                <div className="space-y-4">
+                    {upcoming.map((card) => (
+                        <UpcomingTodoCard
+                            key={card.id}
+                            {...card}
+                        />
+                    ))}
+                </div>
             </div>
-
         </div>
     );
 }
