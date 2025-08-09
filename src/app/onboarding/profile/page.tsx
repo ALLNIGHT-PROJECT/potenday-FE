@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from "react";
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
+import { useProfile } from "@/api/auth/profileApi"; // useProfile 훅 임포트
 
 export default function OnboardingProfilePage() {
     const [name, setName] = useState('');
@@ -10,15 +11,26 @@ export default function OnboardingProfilePage() {
 
     const canSubmit = name.trim().length > 0 && intro.trim().length > 0;
 
+    const { mutate: submitProfile } = useProfile();
+
     const handleClick = () => {
         if (canSubmit) {
-            router.push('/onboarding/task-select');
+            const profileData = { userName: name, introduction: intro };
+
+            // 프로필 데이터 제출
+            submitProfile(profileData, {
+                onSuccess: () => {
+                    router.replace('/todo');
+                },
+                onError: (error) => {
+                    alert(`프로필 제출에 실패했습니다: ${error.message}`);
+                },
+            });
         }
     };
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-white">
-            {/* 메인 헤드라인 */}
             <h1 className="headline-1 text-coolNeutral-700 text-center mb-[36px]">
                 서비스명에 오신 것을 환영해요!
             </h1>
