@@ -199,17 +199,44 @@ export default function Home() {
                 <div className="flex items-center">
                     {/* 좌측 타이틀 */}
                     <span className="body-1-700 text-coolNeutral-650">Task box</span>
-                    {/* 날짜 선택 박스 */}
-                    {/*<div className="flex items-center bg-coolNeutral-200 rounded-[6px] px-4 py-2 mr-2">*/}
-                    {/*    <img src="/icons/ic-calendar-coolNeutral-600.svg" alt="달력" className="w-4 h-4 mr-[10px]" />*/}
-                    {/*    <span className="label-1-700 text-coolNeutral-900">2025.08</span>*/}
-                    {/*</div>*/}
+                    {/* 정렬 드롭다운 */}
+                    <CommonDropdown
+                        align="right"
+                        offsetY={8}
+                        renderButton={({ onClick }) => (
+                            <div
+                                className="flex items-center rounded-[6px] px-4 py-2"
+                                onClick={onClick}
+                            >
+                                <img src="/icons/ic-sort.svg" alt="정렬" className="w-4 h-4 mr-[10px]"/>
+                                <span className="label-1-700 text-coolNeutral-900">기한 순</span>
+                            </div>
+                        )}
+                    >
+                        <div className="min-w-[140px] flex flex-col p-[8px]">
+                            <button
+                                type="button"
+                                className="group flex items-center px-4 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition label-1 text-coolNeutral-700 font-semibold"
+                                onClick={() => {
+                                    console.log("기한 순 선택됨");
+                                    // 여기에 정렬 로직 추가
+                                }}
+                            >
+                                기한 순
+                            </button>
+                            <button
+                                type="button"
+                                className="group flex items-center px-4 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition label-1 text-coolNeutral-700 font-semibold"
+                                onClick={() => {
+                                    console.log("중요도 순 선택됨");
+                                    // 여기에 정렬 로직 추가
+                                }}
+                            >
+                                중요도 순
+                            </button>
+                        </div>
+                    </CommonDropdown>
 
-                    {/*/!* 정렬 박스 *!/*/}
-                    <div className="flex items-center rounded-[6px] px-4 py-2">
-                        <img src="/icons/ic-sort.svg" alt="정렬" className="w-4 h-4 mr-[10px]"/>
-                        <span className="label-1-700 text-coolNeutral-900">최신 순</span>
-                    </div>
                     <div className="flex-1"/>
                     {/* Task 추가하기 드롭다운 */}
                     <CommonDropdown
