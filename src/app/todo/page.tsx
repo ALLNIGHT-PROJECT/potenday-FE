@@ -22,8 +22,6 @@ export default function Home() {
     const [showModal, setShowModal] = useState(false);
     const [upcoming, setUpcoming] = useState<UpcomingCardData[]>(initialUpcoming);
 
-    const [activeUpcomingId, setActiveUpcomingId] = useState<string | null>(null);
-    const [upOverlaySize, setUpOverlaySize] = useState<{ width:number; height:number } | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [modalAction, setModalAction] = useState<CardAction>('delete');
     const [targetId, setTargetId] = useState<string | null>(null);
@@ -35,29 +33,7 @@ export default function Home() {
     const [editModalOpen, setEditModalOpen] = useState(false)
     const [editForm, setEditForm] = useState<EditTaskValue>(initialEditForm);
 
-
-
-    const onUpcomingDragStart = (e: DragStartEvent) => {
-        setActiveUpcomingId(String(e.active.id));
-        const rect = e.active.rect.current.translated ?? e.active.rect.current.initial;
-        if (rect) setUpOverlaySize({ width: rect.width, height: rect.height }); // ✅ 첫 프레임에 고정
-    };
-
-    const onUpcomingDragEnd = (e: DragEndEvent) => {
-        const { active, over } = e;
-        if (over && active.id !== over.id) {
-            const oldIndex = upcoming.findIndex(u => u.id === active.id);
-            const newIndex = upcoming.findIndex(u => u.id === over.id);
-            setUpcoming(prev => arrayMove(prev, oldIndex, newIndex));
-        }
-        setActiveUpcomingId(null);
-        setUpOverlaySize(null);
-    };
-
-    const activeUpcomingCard = useMemo(
-        () => (activeUpcomingId ? upcoming.find(u => u.id === activeUpcomingId) : null),
-        [activeUpcomingId, upcoming]
-    );
+    const [isBusy, setIsBusy] = useState(false);
 
     const onDragStart = (e: DragStartEvent) => {
         setActiveId(String(e.active.id));
@@ -107,6 +83,14 @@ export default function Home() {
         }
     };
 
+    const handleAddTask = () => {
+        setIsBusy(true)
+
+        setTimeout(() => {
+            setIsBusy(false);
+        }, 3000); // 3초 뒤 해제
+    }
+
     const modalText = {
         title: '오늘 할 일에서 뺄까요?',
         desc: 'Task Box에서 언제든지 다시 추가할 수 있어요!',
@@ -116,37 +100,57 @@ export default function Home() {
         <div className="flex space-x-5">
             <div className="flex-1 flex-col pb-[30px] px-[30px] space-y-4 items-start">
                 <TaskHeaderBar />
-                <DndContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-                    <SortableContext items={cards.map(c => c.id)} strategy={verticalListSortingStrategy}>
-                        {cards.map(card => (
-                            <SortableTodoCard key={card.id} id={card.id} {...card} onRequestAction={onRequestAction} />
-                        ))}
-                    </SortableContext>
+                <div className="relative">
+                    <div
+                        className={`
+                            transition
+                            space-y-4
+                            ${isBusy ? "blur-[2px] brightness-95 pointer-events-none" : ""}
+                        `}
+                        aria-busy={isBusy}
+                    >
+                        <DndContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
+                            <SortableContext items={cards.map(c => c.id)} strategy={verticalListSortingStrategy}>
+                                {cards.map(card => (
+                                    <SortableTodoCard key={card.id} id={card.id} {...card} onRequestAction={onRequestAction}/>)
+                                )}
+                            </SortableContext>
 
-                    {/* ✅ 크기 고정 Overlay */}
-                    <DragOverlay dropAnimation={null}>
-                        {activeCard ? (
-                            <div
-                                style={{
-                                    width: overlaySize?.width,
-                                    height: overlaySize?.height,
-                                }}
-                                className="w-full" // 보험
-                            >
-                                <TodoCard
-                                    {...activeCard}
-                                    containerStyle={{
-                                        width: overlaySize?.width,
-                                        height: overlaySize?.height,
-                                    }}
-                                    containerClassName="transform-gpu"
-                                    isDragging
-                                    renderHandle={undefined}
-                                />
+                            {/* ✅ 크기 고정 Overlay */}
+                            <DragOverlay dropAnimation={null}>
+                                {activeCard ? (
+                                    <div
+                                        style={{
+                                            width: overlaySize?.width,
+                                            height: overlaySize?.height,
+                                        }}
+                                        className="w-full" // 보험
+                                    >
+                                        <TodoCard
+                                            {...activeCard}
+                                            containerStyle={{
+                                                width: overlaySize?.width,
+                                                height: overlaySize?.height,
+                                            }}
+                                            containerClassName="transform-gpu"
+                                            isDragging
+                                            renderHandle={undefined}
+                                        />
+                                    </div>
+                                ) : null}
+                            </DragOverlay>
+                        </DndContext>
+                    </div>
+
+                    {isBusy && (
+                        <div className="absolute inset-0 z-10 grid place-items-center bg-primary-600/10 backdrop-blur-[1px] pointer-events-auto rounded-2xl">
+                            <div className="flex flex-col items-center gap-3">
+                                <img src="/icons/ic-loading.svg" alt="로딩" className="w-[122px] h-[122px]"/>
+                                <p className="text-center text-sm text-gray-700 font-semibold">추가한 일을 우선순위에 맞게 조정하고 있어요!<br/>최고의 플랜을 만드는 중...</p>
                             </div>
-                        ) : null}
-                    </DragOverlay>
-                </DndContext>
+                        </div>
+                    )}
+                </div>
 
                 <CommonModal
                     open={modalOpen}
@@ -266,6 +270,7 @@ export default function Home() {
                         <UpcomingTodoCard
                             key={card.id}
                             {...card}
+                            onAddTodayTask={handleAddTask}
                         />
                     ))}
                 </div>

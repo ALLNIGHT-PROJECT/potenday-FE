@@ -10,7 +10,8 @@ export default function UpcomingTodoCard({
      importance,
      estimatedTime,
      deadline,
-     tasks
+     tasks,
+     onAddTodayTask
 }: UpcomingTodoDetailProps) {
     return (
         <div
@@ -23,7 +24,7 @@ export default function UpcomingTodoCard({
             <div className="mt-6">
                 <UpcomingTodoTaskList tasks={tasks}/>
             </div>
-            <AddTodayTaskButton/>
+            <AddTodayTaskButton onClick={onAddTodayTask}/>
         </div>
     );
 }
@@ -147,11 +148,11 @@ function UpcomingTodoTaskList({ tasks }: { tasks: UpcomingTodoTask[] }) {
     )
 }
 
-function AddTodayTaskButton() {
+function AddTodayTaskButton({ onClick }: { onClick?: () => void }) {
     return (
         <button
             type="button"
-            onClick={() => alert("오늘 할 일이 추가되었습니다!")}
+            onClick={onClick}
             className="
                 flex items-center gap-2
                 px-2 py-1
