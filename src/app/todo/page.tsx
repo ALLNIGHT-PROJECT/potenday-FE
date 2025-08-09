@@ -97,8 +97,8 @@ export default function Home() {
         confirm: '삭제하기',
     };
     return (
-        <div className="flex space-x-5">
-            <div className="flex-1 flex-col pb-[30px] px-[30px] space-y-4 items-start">
+        <div className="flex">
+            <div className="flex-1 flex-col pb-[30px] pl-[30px] pr-[50px] space-y-4 items-start">
                 <TaskHeaderBar />
                 <div className="relative">
                     <div
@@ -152,22 +152,7 @@ export default function Home() {
                     )}
                 </div>
 
-                <CommonModal
-                    open={modalOpen}
-                    onClose={() => setModalOpen(false)}
-                    title={modalText.title}
-                    description={modalText.desc}
-                    cancelText="취소"
-                    confirmText={modalText.confirm}
-                    onConfirm={handleConfirm}
-                />
-                <EditTaskModal
-                    open={editModalOpen}
-                    value={editForm}
-                    onChange={setEditForm}
-                    onClose={handleEditClose}
-                    onSubmit={handleEditSubmit}
-                />
+
             </div>
 
             <div className="flex-col space-y-4 items-start p-[30px] rounded-tl-2xl border border-gray-200">
@@ -271,10 +256,28 @@ export default function Home() {
                             key={card.id}
                             {...card}
                             onAddTodayTask={handleAddTask}
+                            onRequestAction={onRequestAction}
                         />
                     ))}
                 </div>
             </div>
+
+            <CommonModal
+                open={modalOpen}
+                onClose={() => setModalOpen(false)}
+                title={modalText.title}
+                description={modalText.desc}
+                cancelText="취소"
+                confirmText={modalText.confirm}
+                onConfirm={handleConfirm}
+            />
+            <EditTaskModal
+                open={editModalOpen}
+                value={editForm}
+                onChange={setEditForm}
+                onClose={handleEditClose}
+                onSubmit={handleEditSubmit}
+            />
         </div>
     );
 }

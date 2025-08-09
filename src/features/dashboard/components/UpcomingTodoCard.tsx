@@ -5,19 +5,21 @@ import CommonDropdown from "@/components/ui/dropdown/CommonDropdown";
 import {UpcomingTodoDetailProps, UpcomingTodoHeaderProps, UpcomingTodoMetaInfoProps, UpcomingTodoTask} from "../type"
 
 export default function UpcomingTodoCard({
+     id,
      project,
      title,
      importance,
      estimatedTime,
      deadline,
      tasks,
-     onAddTodayTask
+     onAddTodayTask,
+     onRequestAction
 }: UpcomingTodoDetailProps) {
     return (
         <div
             className={`bg-white rounded-[16px] shadow-md p-4 flex flex-col flex-none w-auto min-w-[360px]`}
         >
-            <UpcomingTodoHeader project={project} title={title}/>
+            <UpcomingTodoHeader project={project} title={title} onRequestAction={onRequestAction} id={id}/>
             <div className="mt-4">
                 <UpcomingTodoMetaInfo importance={importance} estimatedTime={estimatedTime} deadline={deadline}/>
             </div>
@@ -30,8 +32,10 @@ export default function UpcomingTodoCard({
 }
 
 function UpcomingTodoHeader({
+    id,
     project,
-    title
+    title,
+    onRequestAction
 }: UpcomingTodoHeaderProps) {
     return (
         <div className="flex items-center justify-between w-full">
@@ -62,9 +66,7 @@ function UpcomingTodoHeader({
                             <button
                                 type="button"
                                 className="group flex items-center pl-4 pr-2 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition justify-between label-1 text-coolNeutral-700 font-semibold"
-                                onClick={() => {
-                                    console.log("수정하기")
-                                }}
+                                onClick={(e) => { e.stopPropagation(); onRequestAction?.(id, 'edit'); }}
                             >
                                 수정하기
                                 <img
@@ -76,9 +78,7 @@ function UpcomingTodoHeader({
                             <button
                                 type="button"
                                 className="group flex items-center pl-4 pr-2 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition justify-between label-1 text-coolNeutral-700 font-semibold"
-                                onClick={() => {
-                                    console.log("삭제하기")
-                                }}
+                                onClick={(e) => { e.stopPropagation(); onRequestAction?.(id, 'delete'); }}
                             >
                                 삭제하기
                                 <img
