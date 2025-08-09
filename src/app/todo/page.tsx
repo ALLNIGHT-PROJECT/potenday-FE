@@ -15,60 +15,31 @@ import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-ki
 import SortableTodoCard from "@/features/dashboard/components/SortableTodoCard";
 import SortableUpcomingCard from "@/features/dashboard/components/SortableUpcomingCard"
 import ChatSideModal from "@/features/dashboard/components/ChatSideModal";
-// Types
-type ChatTab = {
-    id: string;
-    label: string;
-    active?: boolean;
-};
-
-type ChatItem = {
-    id: string;
-    title: string;
-    unread?: number;
-};
-
-
-type UpcomingCardData = {
-    id: string;
-    project: string;
-    title: string;
-    importance: "낮음" | "보통" | "높음";
-    estimatedTime: string;
-    deadline: string;
-    tasks: { id: number; name: string; estimatedTime: string }[];
-};
-
-
-
-type TodoCardData = {
-    id: string;
-    project: string;
-    title: string;
-    importance: string;
-    estimatedTime: string;
-    deadline: string;
-    progress: number;
-    statusLabel: string;
-    description: string;
-    tasks: { id: number; name: string; estimatedTime: string; completed: boolean }[];
-    references: { name: string; url: string }[];
-};
+import CommonModal from "@/components/ui/modal/CommonModal";
+import EditTaskModal from "@/features/dashboard/components/EditTaskModal";
+import { ChatTab, ChatItem, CardAction, UpcomingCardData, TodoCardData } from '/type';
+import {EditTaskValue} from "@/features/dashboard/type";
+import {initialEditForm, initialUpcoming, initialCards, initialTabs, initialChats} from './constants/initialData';
 
 export default function Home() {
     const router = useRouter();
     const [showModal, setShowModal] = useState(false);
-    const [upcoming, setUpcoming] = useState<UpcomingCardData[]>([
-        { id:"u1", project:"프로젝트 A", title:"할 일 제목", importance:"높음", estimatedTime:"2시간", deadline:"2023-12-31",
-            tasks:[{id:1,name:"하위 작업 1",estimatedTime:"1h"},{id:2,name:"하위 작업 2",estimatedTime:"1.5h"},{id:3,name:"하위 작업 3",estimatedTime:"2h"}] },
-        { id:"u2", project:"프로젝트 A", title:"할 일 제목", importance:"높음", estimatedTime:"2시간", deadline:"2023-12-31",
-            tasks:[{id:1,name:"하위 작업 1",estimatedTime:"1h"},{id:2,name:"하위 작업 2",estimatedTime:"1.5h"},{id:3,name:"하위 작업 3",estimatedTime:"2h"}] },
-        { id:"u3", project:"프로젝트 A", title:"할 일 제목", importance:"높음", estimatedTime:"2시간", deadline:"2023-12-31",
-            tasks:[{id:1,name:"하위 작업 1",estimatedTime:"1h"},{id:2,name:"하위 작업 2",estimatedTime:"1.5h"},{id:3,name:"하위 작업 3",estimatedTime:"2h"}] },
-    ]);
+    const [upcoming, setUpcoming] = useState<UpcomingCardData[]>(initialUpcoming);
 
     const [activeUpcomingId, setActiveUpcomingId] = useState<string | null>(null);
     const [upOverlaySize, setUpOverlaySize] = useState<{ width:number; height:number } | null>(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalAction, setModalAction] = useState<CardAction>('delete');
+    const [targetId, setTargetId] = useState<string | null>(null);
+
+    const [cards, setCards] = useState<TodoCardData[]>(initialCards);
+
+    const [activeId, setActiveId] = useState<string | null>(null);
+    const [overlaySize, setOverlaySize] = useState<{width:number; height:number} | null>(null);
+    const [editModalOpen, setEditModalOpen] = useState(false)
+    const [editForm, setEditForm] = useState<EditTaskValue>(initialEditForm);
+
+
 
     const onUpcomingDragStart = (e: DragStartEvent) => {
         setActiveUpcomingId(String(e.active.id));
@@ -92,58 +63,6 @@ export default function Home() {
         [activeUpcomingId, upcoming]
     );
 
-    const [cards, setCards] = useState<TodoCardData[]>([
-        {
-            id: "card-1",
-            project: "프로젝트 A",
-            title: "할 일 제목 1",
-            importance: "높음",
-            estimatedTime: "2시간",
-            deadline: "2023-12-31",
-            progress: 75,
-            statusLabel: "진행 중",
-            description: "이 할 일에 대한 자세한 설명입니다.",
-            tasks: [
-                { id: 1, name: "하위 작업 1", estimatedTime: "1h", completed: true },
-                { id: 2, name: "하위 작업 2", estimatedTime: "1.5h", completed: false },
-                { id: 3, name: "하위 작업 3", estimatedTime: "2h", completed: false },
-            ],
-            references: [
-                { name: "참조 문서 1", url: "https://example.com/doc1" },
-                { name: "참조 문서 2", url: "https://example.com/doc2" },
-            ],
-        },
-        {
-            id: "card-2",
-            project: "프로젝트 A",
-            title: "할 일 제목 2",
-            importance: "높음",
-            estimatedTime: "2시간",
-            deadline: "2023-12-31",
-            progress: 40,
-            statusLabel: "대기",
-            description: "설명 2",
-            tasks: [],
-            references: [],
-        },
-        {
-            id: "card-3",
-            project: "프로젝트 A",
-            title: "할 일 제목 3",
-            importance: "보통",
-            estimatedTime: "1시간",
-            deadline: "2023-12-31",
-            progress: 10,
-            statusLabel: "대기",
-            description: "설명 3",
-            tasks: [],
-            references: [],
-        },
-    ]);
-
-    const [activeId, setActiveId] = useState<string | null>(null);
-    const [overlaySize, setOverlaySize] = useState<{width:number; height:number} | null>(null);
-
     const onDragStart = (e: DragStartEvent) => {
         setActiveId(String(e.active.id));
         const r = e.active.rect?.current?.initial;
@@ -158,6 +77,45 @@ export default function Home() {
         setCards((prev) => arrayMove(prev, oldIndex, newIndex));
     };
     const activeCard = cards.find(c => c.id === activeId);
+
+
+    const handleEditSubmit = () => {
+        console.log('submit payload:', editForm);
+        setEditForm(initialEditForm);
+        setEditModalOpen(false);
+    };
+
+    const handleEditClose = () => {
+        setEditForm(initialEditForm); // ✅ 닫을 때 초기화
+        setEditModalOpen(false);
+    };
+
+    const onRequestAction = (id: string, action: CardAction) => {
+        setTargetId(id);
+        setModalAction(action);
+        if(action === "delete") {
+            setModalOpen(true);
+        } else {
+            setEditModalOpen(true)
+        }
+    };
+
+    const handleConfirm = () => {
+        if (!targetId) return;
+        if (modalAction === 'delete') {
+            setCards(prev => prev.filter(c => c.id !== targetId));
+        } else if (modalAction === 'edit') {
+            // 예: 편집 페이지로 이동 or 인라인 편집 시작
+            // router.push(`/todo/${targetId}/edit`)
+            console.log('edit', targetId);
+        }
+    };
+
+    const modalText = {
+        title: '오늘 할 일에서 뺄까요?',
+        desc: 'Task Box에서 언제든지 다시 추가할 수 있어요!',
+        confirm: '삭제하기',
+    };
     return (
         <div className="flex space-x-5">
             <div className="flex-1 flex-col pb-[30px] px-[30px] space-y-4 items-start">
@@ -165,7 +123,7 @@ export default function Home() {
                 <DndContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
                     <SortableContext items={cards.map(c => c.id)} strategy={verticalListSortingStrategy}>
                         {cards.map(card => (
-                            <SortableTodoCard key={card.id} id={card.id} {...card} />
+                            <SortableTodoCard key={card.id} id={card.id} {...card} onRequestAction={onRequestAction} />
                         ))}
                     </SortableContext>
 
@@ -193,6 +151,23 @@ export default function Home() {
                         ) : null}
                     </DragOverlay>
                 </DndContext>
+
+                <CommonModal
+                    open={modalOpen}
+                    onClose={() => setModalOpen(false)}
+                    title={modalText.title}
+                    description={modalText.desc}
+                    cancelText="취소"
+                    confirmText={modalText.confirm}
+                    onConfirm={handleConfirm}
+                />
+                <EditTaskModal
+                    open={editModalOpen}
+                    value={editForm}
+                    onChange={setEditForm}
+                    onClose={handleEditClose}
+                    onSubmit={handleEditSubmit}
+                />
             </div>
 
             <div className="flex-col space-y-4 items-start p-[30px] rounded-tl-2xl border border-gray-200">
@@ -328,6 +303,7 @@ export default function Home() {
                     </DragOverlay>
                 </DndContext>
             </div>
+
         </div>
     );
 }
@@ -335,26 +311,13 @@ export default function Home() {
 function TaskHeaderBar() {
     const [chatModalOpen, setChatModalOpen] = useState(false);
     const tabs = useMemo<ChatTab[]>(
-        () => [
-            { id: "t0", label: "Liquid Glass 사전작업", active: true },
-            { id: "t1", label: "새로운 채팅 1" },
-            { id: "t2", label: "새로운 채팅 2" },
-        ],
+        () => initialTabs,
         []
     );
     const chats = useMemo<ChatItem[]>(
-        () => [
-            { id: "c1", title: "기획 업무 도움요청", unread: 2 },
-            { id: "c2", title: "개발 업무 도움요청" },
-            { id: "c3", title: "Liquid Glass 사전작업" },
-            { id: "c4", title: "새로운 채팅 1" },
-            { id: "c5", title: "새로운 채팅 2" },
-        ],
+        () => initialChats,
         []
     );
-
-
-
 
     return (
         <div className="w-full flex items-center gap-4">

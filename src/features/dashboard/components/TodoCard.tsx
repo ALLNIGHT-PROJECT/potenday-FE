@@ -16,6 +16,8 @@ type Reference = {
     url?: string;
 };
 
+type CardAction = 'edit' | 'delete';
+
 type TodoDetailProps = {
     project: string;
     title: string;
@@ -29,6 +31,7 @@ type TodoDetailProps = {
     references: Reference[];
     renderHandle?: (opts: { className?: string }) => React.ReactNode;
     isDragging?: boolean;
+    onRequestAction?: (id: string, action: CardAction) => void;
 };
 
 type TodoHeaderProps = {
@@ -56,7 +59,7 @@ export default function TodoCard({
    tasks,
    references,
    renderHandle,
-   isDragging
+   isDragging, onRequestAction, id
 }: TodoDetailProps) {
     return (
         <div className="flex bg-blue-100 rounded-[20px] p-3 gap-3 w-auto">
@@ -94,9 +97,7 @@ export default function TodoCard({
                             <button
                                 type="button"
                                 className="group flex items-center pl-4 pr-2 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition justify-between label-1 text-coolNeutral-700 font-semibold"
-                                onClick={() => {
-                                    console.log("수정하기")
-                                }}
+                                onClick={(e) => { e.stopPropagation(); onRequestAction?.(id, 'edit'); }}
                             >
                                 수정하기
                                 <img
@@ -108,9 +109,7 @@ export default function TodoCard({
                             <button
                                 type="button"
                                 className="group flex items-center pl-4 pr-2 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition justify-between label-1 text-coolNeutral-700 font-semibold"
-                                onClick={() => {
-                                    console.log("삭제하기")
-                                }}
+                                onClick={(e) => { e.stopPropagation(); onRequestAction?.(id, 'delete'); }}
                             >
                                 삭제하기
                                 <img
