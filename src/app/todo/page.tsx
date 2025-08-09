@@ -56,7 +56,8 @@ type TodoCardData = {
 };
 
 export default function Home() {
-
+    const router = useRouter();
+    const [showModal, setShowModal] = useState(false);
     const [upcoming, setUpcoming] = useState<UpcomingCardData[]>([
         { id:"u1", project:"프로젝트 A", title:"할 일 제목", importance:"높음", estimatedTime:"2시간", deadline:"2023-12-31",
             tasks:[{id:1,name:"하위 작업 1",estimatedTime:"1h"},{id:2,name:"하위 작업 2",estimatedTime:"1.5h"},{id:3,name:"하위 작업 3",estimatedTime:"2h"}] },
@@ -198,20 +199,68 @@ export default function Home() {
                 <div className="flex items-center">
                     {/* 좌측 타이틀 */}
                     <span className="body-1-700 text-coolNeutral-650">Task box</span>
-
-                    <div className="flex-1" />
-
                     {/* 날짜 선택 박스 */}
-                    <div className="flex items-center bg-coolNeutral-200 rounded-[6px] px-4 py-2 mr-2">
-                        <img src="/icons/ic-calendar-coolNeutral-600.svg" alt="달력" className="w-4 h-4 mr-[10px]" />
-                        <span className="label-1-700 text-coolNeutral-900">2025.08</span>
-                    </div>
+                    {/*<div className="flex items-center bg-coolNeutral-200 rounded-[6px] px-4 py-2 mr-2">*/}
+                    {/*    <img src="/icons/ic-calendar-coolNeutral-600.svg" alt="달력" className="w-4 h-4 mr-[10px]" />*/}
+                    {/*    <span className="label-1-700 text-coolNeutral-900">2025.08</span>*/}
+                    {/*</div>*/}
 
-                    {/* 정렬 박스 */}
-                    <div className="flex items-center bg-coolNeutral-200 rounded-[6px] px-4 py-2">
-                        <img src="/icons/ic-sort.svg" alt="정렬" className="w-4 h-4 mr-[10px]" />
+                    {/*/!* 정렬 박스 *!/*/}
+                    <div className="flex items-center rounded-[6px] px-4 py-2">
+                        <img src="/icons/ic-sort.svg" alt="정렬" className="w-4 h-4 mr-[10px]"/>
                         <span className="label-1-700 text-coolNeutral-900">최신 순</span>
                     </div>
+                    <div className="flex-1"/>
+                    {/* Task 추가하기 드롭다운 */}
+                    <CommonDropdown
+                        align="right"
+                        offsetY={8}
+                        renderButton={({onClick}) => (
+                            <button
+                                type="button"
+                                className="flex items-center gap-2 bg-common-100 rounded-[12px] border border-coolNeutral-100 px-5 py-3 label-1 text-coolNeutral-800 shadow"
+                                onClick={onClick}
+                            >
+                                <img src="./icons/ic-plus.svg" alt="할 일 추가" className="w-6 h-6"/>
+                                Task 추가하기
+                            </button>
+                        )}
+                    >
+                        <div className="min-w-[180px] flex flex-col p-[8px]">
+                            <button
+                                type="button"
+                                className="group flex items-center pl-4 pr-2 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition justify-between label-1 text-coolNeutral-700 font-semibold"
+                                onClick={() => {
+                                    router.push('/todo/autoTaskExtract_1');
+                                }}
+                            >
+                                간편 추출하기
+                                <img
+                                    src="/icons/ic-arrow-right.svg"
+                                    alt=">"
+                                    className="w-4 h-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                                />
+                            </button>
+                            <button
+                                type="button"
+                                className="group flex items-center pl-4 pr-2 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition justify-between label-1 text-coolNeutral-700 font-semibold"
+                                onClick={() => {
+                                    setShowModal(true);
+                                }}
+                            >
+                                직접 입력하기
+                                <img
+                                    src="/icons/ic-arrow-right.svg"
+                                    alt=">"
+                                    className="w-4 h-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                                />
+                            </button>
+                        </div>
+                    </CommonDropdown>
+                    {/* AddTaskModal 모달 */}
+                    {showModal && (
+                        <AddTaskModal onCloseAction={() => setShowModal(false)}/>
+                    )}
                 </div>
 
                 <DndContext onDragStart={onUpcomingDragStart} onDragEnd={onUpcomingDragEnd}>
@@ -257,8 +306,6 @@ export default function Home() {
 }
 
 function TaskHeaderBar() {
-    const [showModal, setShowModal] = useState(false);
-
     const [chatModalOpen, setChatModalOpen] = useState(false);
     const tabs = useMemo<ChatTab[]>(
         () => [
@@ -280,7 +327,7 @@ function TaskHeaderBar() {
     );
 
 
-    const router = useRouter();
+
 
     return (
         <div className="w-full flex items-center gap-4">
@@ -320,57 +367,9 @@ function TaskHeaderBar() {
                 </button>
             </div>
 
-            {/* Task 추가하기 드롭다운 */}
-            <CommonDropdown
-                align="right"
-                offsetY={8}
-                renderButton={({ onClick }) => (
-                    <button
-                        type="button"
-                        className="flex items-center gap-2 bg-common-100 rounded-[12px] border border-coolNeutral-100 px-5 py-3 label-1 text-coolNeutral-800 shadow"
-                        onClick={onClick}
-                    >
-                        <img src="./icons/ic-plus.svg" alt="할 일 추가" className="w-6 h-6"/>
-                        Task 추가하기
-                    </button>
-                )}
-            >
-                <div className="min-w-[180px] flex flex-col p-[8px]">
-                    <button
-                        type="button"
-                        className="group flex items-center pl-4 pr-2 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition justify-between label-1 text-coolNeutral-700 font-semibold"
-                        onClick={() => {
-                            router.push('/todo/autoTaskExtract_1');
-                        }}
-                    >
-                        간편 추출하기
-                        <img
-                            src="/icons/ic-arrow-right.svg"
-                            alt=">"
-                            className="w-4 h-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                        />
-                    </button>
-                    <button
-                        type="button"
-                        className="group flex items-center pl-4 pr-2 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition justify-between label-1 text-coolNeutral-700 font-semibold"
-                        onClick={() => {
-                            setShowModal(true);
-                        }}
-                    >
-                        직접 입력하기
-                        <img
-                            src="/icons/ic-arrow-right.svg"
-                            alt=">"
-                            className="w-4 h-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                        />
-                    </button>
-                </div>
-            </CommonDropdown>
 
-            {/* AddTaskModal 모달 */}
-            {showModal && (
-                <AddTaskModal onCloseAction={() => setShowModal(false)} />
-            )}
+
+
 
             <ChatSideModal open={chatModalOpen} onClose={() => setChatModalOpen(false)} tabs={tabs} chats={chats}/>
         </div>

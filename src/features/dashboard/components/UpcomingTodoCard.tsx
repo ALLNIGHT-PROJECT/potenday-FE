@@ -193,27 +193,22 @@ function AddTodayTaskButton() {
     return (
         <button
             type="button"
+            onClick={() => alert("오늘 할 일이 추가되었습니다!")}
             className="
                 flex items-center gap-2
                 px-2 py-1
                 rounded-[6px]
                 border border-semantic-border-divider
                 bg-common-100
+                hover:bg-gray-200
+                active:bg-gray-300
+                transition-colors duration-150
                 mt-5
                 self-end
             ">
-            <input
-                type="checkbox"
-                className="
-                  w-[10px] h-[10px]
-                  bg-coolNeutral-600
-                  border-2 border-bg-coolNeutral-600 rounded
-                  focus:ring-0
-                "
-            />
             <span className="caption-2 text-coolNeutral-750">
-        오늘 할 일에 추가하기
-      </span>
+                오늘 할 일에 추가하기
+            </span>
         </button>
     );
 }
