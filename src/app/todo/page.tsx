@@ -354,10 +354,6 @@ function TaskHeaderBar() {
                 </button>
             </div>
 
-
-
-
-
             <ChatSideModal open={chatModalOpen} onClose={() => setChatModalOpen(false)} tabs={tabs} chats={chats}/>
         </div>
     );
