@@ -3,7 +3,6 @@
 import { cn } from '@/lib/utils';
 import CommonDropdown from "@/components/ui/dropdown/CommonDropdown";
 
-type UpcomingRenderHandle = (opts: { className?: string }) => React.ReactNode;
 
 type UpcomingTodoTask = {
     id: number;
@@ -18,15 +17,11 @@ type UpcomingTodoDetailProps = {
     estimatedTime: string;
     deadline: string;
     tasks: UpcomingTodoTask[];
-    renderHandle?: UpcomingRenderHandle;
-    containerClassName?: string;
-    containerStyle?: React.CSSProperties;
 };
 
 type UpcomingTodoHeaderProps = {
     project: string;
     title: string;
-    renderHandle?: UpcomingRenderHandle;
 };
 
 type UpcomingTodoMetaInfoProps = {
@@ -41,15 +36,13 @@ export default function UpcomingTodoCard({
      importance,
      estimatedTime,
      deadline,
-     tasks,
-     renderHandle,
-     isDragging
+     tasks
 }: UpcomingTodoDetailProps) {
     return (
         <div
             className={`bg-white rounded-[16px] shadow-md p-4 flex flex-col flex-none w-auto min-w-[360px]`}
         >
-            <UpcomingTodoHeader project={project} title={title} renderHandle={renderHandle}/>
+            <UpcomingTodoHeader project={project} title={title}/>
             <div className="mt-4">
                 <UpcomingTodoMetaInfo importance={importance} estimatedTime={estimatedTime} deadline={deadline}/>
             </div>
