@@ -6,68 +6,37 @@ import CommonDropdown from "@/components/ui/dropdown/CommonDropdown";
 import {usePathname, useRouter} from 'next/navigation';
 import {useMemo, useState} from "react";
 import AddTaskModal from "@/features/dashboard/components/AddTaskModal";
-import Image from "next/image";
-import NotificationDropdown from "@/components/ui/dropdown/NotificationDropdown";
-import AccountDropdown from "@/components/ui/dropdown/AccountDropdown";
 
 import { DragOverlay, DndContext, DragStartEvent, DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
 import SortableTodoCard from "@/features/dashboard/components/SortableTodoCard";
 import SortableUpcomingCard from "@/features/dashboard/components/SortableUpcomingCard"
 import ChatSideModal from "@/features/dashboard/components/ChatSideModal";
-// Types
-type ChatTab = {
-    id: string;
-    label: string;
-    active?: boolean;
-};
-
-type ChatItem = {
-    id: string;
-    title: string;
-    unread?: number;
-};
-
-
-type UpcomingCardData = {
-    id: string;
-    project: string;
-    title: string;
-    importance: "낮음" | "보통" | "높음";
-    estimatedTime: string;
-    deadline: string;
-    tasks: { id: number; name: string; estimatedTime: string }[];
-};
-
-
-
-type TodoCardData = {
-    id: string;
-    project: string;
-    title: string;
-    importance: string;
-    estimatedTime: string;
-    deadline: string;
-    progress: number;
-    statusLabel: string;
-    description: string;
-    tasks: { id: number; name: string; estimatedTime: string; completed: boolean }[];
-    references: { name: string; url: string }[];
-};
+import CommonModal from "@/components/ui/modal/CommonModal";
+import EditTaskModal from "@/features/dashboard/components/EditTaskModal";
+import { ChatTab, ChatItem, CardAction, UpcomingCardData, TodoCardData } from '/type';
+import {EditTaskValue} from "@/features/dashboard/type";
+import {initialEditForm, initialUpcoming, initialCards, initialTabs, initialChats} from './constants/initialData';
 
 export default function Home() {
-
-    const [upcoming, setUpcoming] = useState<UpcomingCardData[]>([
-        { id:"u1", project:"프로젝트 A", title:"할 일 제목", importance:"높음", estimatedTime:"2시간", deadline:"2023-12-31",
-            tasks:[{id:1,name:"하위 작업 1",estimatedTime:"1h"},{id:2,name:"하위 작업 2",estimatedTime:"1.5h"},{id:3,name:"하위 작업 3",estimatedTime:"2h"}] },
-        { id:"u2", project:"프로젝트 A", title:"할 일 제목", importance:"높음", estimatedTime:"2시간", deadline:"2023-12-31",
-            tasks:[{id:1,name:"하위 작업 1",estimatedTime:"1h"},{id:2,name:"하위 작업 2",estimatedTime:"1.5h"},{id:3,name:"하위 작업 3",estimatedTime:"2h"}] },
-        { id:"u3", project:"프로젝트 A", title:"할 일 제목", importance:"높음", estimatedTime:"2시간", deadline:"2023-12-31",
-            tasks:[{id:1,name:"하위 작업 1",estimatedTime:"1h"},{id:2,name:"하위 작업 2",estimatedTime:"1.5h"},{id:3,name:"하위 작업 3",estimatedTime:"2h"}] },
-    ]);
+    const router = useRouter();
+    const [showModal, setShowModal] = useState(false);
+    const [upcoming, setUpcoming] = useState<UpcomingCardData[]>(initialUpcoming);
 
     const [activeUpcomingId, setActiveUpcomingId] = useState<string | null>(null);
     const [upOverlaySize, setUpOverlaySize] = useState<{ width:number; height:number } | null>(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalAction, setModalAction] = useState<CardAction>('delete');
+    const [targetId, setTargetId] = useState<string | null>(null);
+
+    const [cards, setCards] = useState<TodoCardData[]>(initialCards);
+
+    const [activeId, setActiveId] = useState<string | null>(null);
+    const [overlaySize, setOverlaySize] = useState<{width:number; height:number} | null>(null);
+    const [editModalOpen, setEditModalOpen] = useState(false)
+    const [editForm, setEditForm] = useState<EditTaskValue>(initialEditForm);
+
+
 
     const onUpcomingDragStart = (e: DragStartEvent) => {
         setActiveUpcomingId(String(e.active.id));
@@ -91,58 +60,6 @@ export default function Home() {
         [activeUpcomingId, upcoming]
     );
 
-    const [cards, setCards] = useState<TodoCardData[]>([
-        {
-            id: "card-1",
-            project: "프로젝트 A",
-            title: "할 일 제목 1",
-            importance: "높음",
-            estimatedTime: "2시간",
-            deadline: "2023-12-31",
-            progress: 75,
-            statusLabel: "진행 중",
-            description: "이 할 일에 대한 자세한 설명입니다.",
-            tasks: [
-                { id: 1, name: "하위 작업 1", estimatedTime: "1h", completed: true },
-                { id: 2, name: "하위 작업 2", estimatedTime: "1.5h", completed: false },
-                { id: 3, name: "하위 작업 3", estimatedTime: "2h", completed: false },
-            ],
-            references: [
-                { name: "참조 문서 1", url: "https://example.com/doc1" },
-                { name: "참조 문서 2", url: "https://example.com/doc2" },
-            ],
-        },
-        {
-            id: "card-2",
-            project: "프로젝트 A",
-            title: "할 일 제목 2",
-            importance: "높음",
-            estimatedTime: "2시간",
-            deadline: "2023-12-31",
-            progress: 40,
-            statusLabel: "대기",
-            description: "설명 2",
-            tasks: [],
-            references: [],
-        },
-        {
-            id: "card-3",
-            project: "프로젝트 A",
-            title: "할 일 제목 3",
-            importance: "보통",
-            estimatedTime: "1시간",
-            deadline: "2023-12-31",
-            progress: 10,
-            statusLabel: "대기",
-            description: "설명 3",
-            tasks: [],
-            references: [],
-        },
-    ]);
-
-    const [activeId, setActiveId] = useState<string | null>(null);
-    const [overlaySize, setOverlaySize] = useState<{width:number; height:number} | null>(null);
-
     const onDragStart = (e: DragStartEvent) => {
         setActiveId(String(e.active.id));
         const r = e.active.rect?.current?.initial;
@@ -157,6 +74,45 @@ export default function Home() {
         setCards((prev) => arrayMove(prev, oldIndex, newIndex));
     };
     const activeCard = cards.find(c => c.id === activeId);
+
+
+    const handleEditSubmit = () => {
+        console.log('submit payload:', editForm);
+        setEditForm(initialEditForm);
+        setEditModalOpen(false);
+    };
+
+    const handleEditClose = () => {
+        setEditForm(initialEditForm); // ✅ 닫을 때 초기화
+        setEditModalOpen(false);
+    };
+
+    const onRequestAction = (id: string, action: CardAction) => {
+        setTargetId(id);
+        setModalAction(action);
+        if(action === "delete") {
+            setModalOpen(true);
+        } else {
+            setEditModalOpen(true)
+        }
+    };
+
+    const handleConfirm = () => {
+        if (!targetId) return;
+        if (modalAction === 'delete') {
+            setCards(prev => prev.filter(c => c.id !== targetId));
+        } else if (modalAction === 'edit') {
+            // 예: 편집 페이지로 이동 or 인라인 편집 시작
+            // router.push(`/todo/${targetId}/edit`)
+            console.log('edit', targetId);
+        }
+    };
+
+    const modalText = {
+        title: '오늘 할 일에서 뺄까요?',
+        desc: 'Task Box에서 언제든지 다시 추가할 수 있어요!',
+        confirm: '삭제하기',
+    };
     return (
         <div className="flex space-x-5">
             <div className="flex-1 flex-col pb-[30px] px-[30px] space-y-4 items-start">
@@ -164,7 +120,7 @@ export default function Home() {
                 <DndContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
                     <SortableContext items={cards.map(c => c.id)} strategy={verticalListSortingStrategy}>
                         {cards.map(card => (
-                            <SortableTodoCard key={card.id} id={card.id} {...card} />
+                            <SortableTodoCard key={card.id} id={card.id} {...card} onRequestAction={onRequestAction} />
                         ))}
                     </SortableContext>
 
@@ -192,26 +148,118 @@ export default function Home() {
                         ) : null}
                     </DragOverlay>
                 </DndContext>
+
+                <CommonModal
+                    open={modalOpen}
+                    onClose={() => setModalOpen(false)}
+                    title={modalText.title}
+                    description={modalText.desc}
+                    cancelText="취소"
+                    confirmText={modalText.confirm}
+                    onConfirm={handleConfirm}
+                />
+                <EditTaskModal
+                    open={editModalOpen}
+                    value={editForm}
+                    onChange={setEditForm}
+                    onClose={handleEditClose}
+                    onSubmit={handleEditSubmit}
+                />
             </div>
 
             <div className="flex-col space-y-4 items-start p-[30px] rounded-tl-2xl border border-gray-200">
                 <div className="flex items-center">
                     {/* 좌측 타이틀 */}
                     <span className="body-1-700 text-coolNeutral-650">Task box</span>
+                    {/* 정렬 드롭다운 */}
+                    <CommonDropdown
+                        align="right"
+                        offsetY={8}
+                        renderButton={({ onClick }) => (
+                            <div
+                                className="flex items-center rounded-[6px] px-4 py-2"
+                                onClick={onClick}
+                            >
+                                <img src="/icons/ic-sort.svg" alt="정렬" className="w-4 h-4 mr-[10px]"/>
+                                <span className="label-1-700 text-coolNeutral-900">기한 순</span>
+                            </div>
+                        )}
+                    >
+                        <div className="min-w-[140px] flex flex-col p-[8px]">
+                            <button
+                                type="button"
+                                className="group flex items-center px-4 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition label-1 text-coolNeutral-700 font-semibold"
+                                onClick={() => {
+                                    console.log("기한 순 선택됨");
+                                    // 여기에 정렬 로직 추가
+                                }}
+                            >
+                                기한 순
+                            </button>
+                            <button
+                                type="button"
+                                className="group flex items-center px-4 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition label-1 text-coolNeutral-700 font-semibold"
+                                onClick={() => {
+                                    console.log("중요도 순 선택됨");
+                                    // 여기에 정렬 로직 추가
+                                }}
+                            >
+                                중요도 순
+                            </button>
+                        </div>
+                    </CommonDropdown>
 
-                    <div className="flex-1" />
-
-                    {/* 날짜 선택 박스 */}
-                    <div className="flex items-center bg-coolNeutral-200 rounded-[6px] px-4 py-2 mr-2">
-                        <img src="/icons/ic-calendar-coolNeutral-600.svg" alt="달력" className="w-4 h-4 mr-[10px]" />
-                        <span className="label-1-700 text-coolNeutral-900">2025.08</span>
-                    </div>
-
-                    {/* 정렬 박스 */}
-                    <div className="flex items-center bg-coolNeutral-200 rounded-[6px] px-4 py-2">
-                        <img src="/icons/ic-sort.svg" alt="정렬" className="w-4 h-4 mr-[10px]" />
-                        <span className="label-1-700 text-coolNeutral-900">최신 순</span>
-                    </div>
+                    <div className="flex-1"/>
+                    {/* Task 추가하기 드롭다운 */}
+                    <CommonDropdown
+                        align="right"
+                        offsetY={8}
+                        renderButton={({onClick}) => (
+                            <button
+                                type="button"
+                                className="flex items-center gap-2 bg-common-100 rounded-[12px] border border-coolNeutral-100 px-5 py-3 label-1 text-coolNeutral-800 shadow"
+                                onClick={onClick}
+                            >
+                                <img src="./icons/ic-plus.svg" alt="할 일 추가" className="w-6 h-6"/>
+                                Task 추가하기
+                            </button>
+                        )}
+                    >
+                        <div className="min-w-[180px] flex flex-col p-[8px]">
+                            <button
+                                type="button"
+                                className="group flex items-center pl-4 pr-2 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition justify-between label-1 text-coolNeutral-700 font-semibold"
+                                onClick={() => {
+                                    router.push('/todo/autoTaskExtract_1');
+                                }}
+                            >
+                                간편 추출하기
+                                <img
+                                    src="/icons/ic-arrow-right.svg"
+                                    alt=">"
+                                    className="w-4 h-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                                />
+                            </button>
+                            <button
+                                type="button"
+                                className="group flex items-center pl-4 pr-2 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition justify-between label-1 text-coolNeutral-700 font-semibold"
+                                onClick={() => {
+                                    setShowModal(true);
+                                }}
+                            >
+                                직접 입력하기
+                                <img
+                                    src="/icons/ic-arrow-right.svg"
+                                    alt=">"
+                                    className="w-4 h-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                                />
+                            </button>
+                        </div>
+                    </CommonDropdown>
+                    {/* AddTaskModal 모달 */}
+                    {showModal && (
+                        <AddTaskModal onCloseAction={() => setShowModal(false)}/>
+                    )}
                 </div>
 
                 <DndContext onDragStart={onUpcomingDragStart} onDragEnd={onUpcomingDragEnd}>
@@ -252,35 +300,21 @@ export default function Home() {
                     </DragOverlay>
                 </DndContext>
             </div>
+
         </div>
     );
 }
 
 function TaskHeaderBar() {
-    const [showModal, setShowModal] = useState(false);
-
     const [chatModalOpen, setChatModalOpen] = useState(false);
     const tabs = useMemo<ChatTab[]>(
-        () => [
-            { id: "t0", label: "Liquid Glass 사전작업", active: true },
-            { id: "t1", label: "새로운 채팅 1" },
-            { id: "t2", label: "새로운 채팅 2" },
-        ],
+        () => initialTabs,
         []
     );
     const chats = useMemo<ChatItem[]>(
-        () => [
-            { id: "c1", title: "기획 업무 도움요청", unread: 2 },
-            { id: "c2", title: "개발 업무 도움요청" },
-            { id: "c3", title: "Liquid Glass 사전작업" },
-            { id: "c4", title: "새로운 채팅 1" },
-            { id: "c5", title: "새로운 채팅 2" },
-        ],
+        () => initialChats,
         []
     );
-
-
-    const router = useRouter();
 
     return (
         <div className="w-full flex items-center gap-4">
@@ -320,86 +354,7 @@ function TaskHeaderBar() {
                 </button>
             </div>
 
-            {/* Task 추가하기 드롭다운 */}
-            <CommonDropdown
-                align="right"
-                offsetY={8}
-                renderButton={({ onClick }) => (
-                    <button
-                        type="button"
-                        className="flex items-center gap-2 bg-common-100 rounded-[12px] border border-coolNeutral-100 px-5 py-3 label-1 text-coolNeutral-800 shadow"
-                        onClick={onClick}
-                    >
-                        <img src="./icons/ic-plus.svg" alt="할 일 추가" className="w-6 h-6"/>
-                        Task 추가하기
-                    </button>
-                )}
-            >
-                <div className="min-w-[180px] flex flex-col p-[8px]">
-                    <button
-                        type="button"
-                        className="group flex items-center pl-4 pr-2 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition justify-between label-1 text-coolNeutral-700 font-semibold"
-                        onClick={() => {
-                            router.push('/todo/autoTaskExtract_1');
-                        }}
-                    >
-                        간편 추출하기
-                        <img
-                            src="/icons/ic-arrow-right.svg"
-                            alt=">"
-                            className="w-4 h-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                        />
-                    </button>
-                    <button
-                        type="button"
-                        className="group flex items-center pl-4 pr-2 py-[6px] rounded-[6px] hover:bg-coolNeutral-200 transition justify-between label-1 text-coolNeutral-700 font-semibold"
-                        onClick={() => {
-                            setShowModal(true);
-                        }}
-                    >
-                        직접 입력하기
-                        <img
-                            src="/icons/ic-arrow-right.svg"
-                            alt=">"
-                            className="w-4 h-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                        />
-                    </button>
-                </div>
-            </CommonDropdown>
-
-            {/* AddTaskModal 모달 */}
-            {showModal && (
-                <AddTaskModal onCloseAction={() => setShowModal(false)} />
-            )}
-
             <ChatSideModal open={chatModalOpen} onClose={() => setChatModalOpen(false)} tabs={tabs} chats={chats}/>
         </div>
-    );
-}
-
-function Header() {
-    const pathname = usePathname();
-    const isOnboarding = pathname.startsWith("/onboarding");
-
-    if (isOnboarding) return null;
-
-    return (
-        <header className="flex items-center w-full px-8 py-4 bg-white">
-            {/* 좌측: 워크스페이스/날짜 */}
-            <div className="flex items-center gap-4 flex-1 min-w-0">
-                {/* 워크스페이스명 + 아이콘 */}
-                <div className="flex items-center gap-2">
-                    {/* 칸반 아이콘(예시) */}
-                    <Image src="/icons/ic-side-bar.svg" alt="" width={16} height={16} />
-                    <span className="label-1 text-coolNeutral-900 truncate">{'{User}’s Workspace'}</span>
-                </div>
-            </div>
-
-            {/* 우측: 알림, 프로필, 로그아웃 */}
-            <div className="flex items-center gap-2 ml-6">
-                <NotificationDropdown/>
-                <AccountDropdown />
-            </div>
-        </header>
     );
 }

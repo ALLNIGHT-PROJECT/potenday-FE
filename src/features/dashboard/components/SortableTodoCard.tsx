@@ -26,6 +26,7 @@ export default function SortableTodoCard(props: SortableTodoCardProps) {
     return (
         <div ref={setNodeRef} style={style} className="w-full">
             <TodoCard
+                id
                 {...cardProps}
                 // ↓↓↓ 핸들에 바인딩 할 수 있도록 props를 내려준다
                 renderHandle={({ className }) => (
