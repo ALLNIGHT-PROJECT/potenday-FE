@@ -2,22 +2,28 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import {useLogin} from "@/api/auth/useLogin";
+import {useAuthStore} from "@/store/authStore";
 
 export default function OnboardingWelcomePage() {
     const router = useRouter();
+    const setTokens = useAuthStore((state) => state.setTokens);
+    const { mutate: login } = useLogin();
+
 
     const handleNaverLogin = () => {
-        const clientId = process.env.NEXT_PUBLIC_NAVER_CLIENT_ID;
-        const redirectUrl = process.env.NEXT_PUBLIC_NAVER_REDIRECT_URL;
-
-        if (!clientId || !redirectUrl) {
-            console.error('Naver client ID or redirect URL is not defined.');
-            return;
-        }
-
-        const naverLoginUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUrl}&state=${Math.random().toString(36).substring(2, 15)}`;
-
-        router.push(naverLoginUrl);
+        login({ email: "dongchyeon", password: "1234" }, {
+            onSuccess: (data) => {
+                if (data) {
+                    // 로그인 성공 시 토큰 저장
+                    setTokens({ accessToken: data.token, refreshToken: data.refreshToken });
+                    router.replace('/onboarding/profile');
+                }
+            },
+            onError: () => {
+                alert('로그인 실패');
+            },
+        });
     };
 
     return (
