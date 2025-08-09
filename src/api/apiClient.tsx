@@ -10,51 +10,42 @@ const axiosInstance = axios.create({
     },
 });
 
-// 요청 인터셉터 - 요청을 보내기 전에 로그 찍기
-axiosInstance.interceptors.request.use(
-    (config) => {
-        console.log('Request:', config);  // 요청 로그 출력
-        return config;
-    },
-    (error) => {
-        console.error('Request Error:', error);  // 요청 에러 로그 출력
-        return Promise.reject(error);
-    }
-);
-
-// 응답 인터셉터 - 응답을 받은 후 로그 찍기
-axiosInstance.interceptors.response.use(
-    (response) => {
-        console.log('Response:', response);  // 응답 로그 출력
-        return response;
-    },
-    (error) => {
-        console.error('Response Error:', error);  // 응답 에러 로그 출력
-        return Promise.reject(error);
-    }
-);
-
 // axios 요청 함수
 // @ts-ignore
-export const sendRequest = async (url: string, data: any = null) => {
+export const sendRequest = async (method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE', url: string, data: any = null) => {
     const { accessToken, refreshToken } = useAuthStore.getState();
 
     try {
-        // accessToken을 헤더에 추가하여 요청
-        const res = await axiosInstance.post(url, data, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        });
+        // 공통 요청 헤더 설정
+        const headers = {
+            Authorization: `Bearer ${accessToken}`,
+        };
 
+        let res;
+
+        // 각 메소드에 맞는 axios 요청
+        if (method === 'GET') {
+            res = await axiosInstance.get(url, { headers });
+        } else if (method === 'POST') {
+            res = await axiosInstance.post(url, data, { headers });
+        } else if (method === 'PUT') {
+            res = await axiosInstance.put(url, data, { headers });
+        } else if (method === 'PATCH') {
+            res = await axiosInstance.patch(url, data, { headers });
+        } else if (method === 'DELETE') {
+            res = await axiosInstance.delete(url, { headers });
+        }
+
+        // 요청이 성공하면 응답 데이터 반환
+        // @ts-ignore
         return {
             success: true,
             data: res.data,
             error: null,
         };
     } catch (error: any) {
+        // 서버 오류 (500 상태 코드)
         if (error.response) {
-            // 서버 오류 (500 상태 코드)
             if (error.response.status === 500) {
                 console.error("Server error:", error.response.data);
                 return {
@@ -66,14 +57,16 @@ export const sendRequest = async (url: string, data: any = null) => {
                     },
                 };
             }
+
             // 401 에러 발생 시 accessToken 갱신 시도
             if (error.response?.status === 401) {
                 const newAccessToken = await refreshAccessToken();
                 if (newAccessToken) {
                     // 갱신된 토큰으로 재시도
-                    return sendRequest(url, data);
+                    return sendRequest(method, url, data);
                 }
             }
+
             // 그 외의 HTTP 오류 처리
             console.error("Request failed with status:", error.response.status);
             return {
@@ -85,6 +78,7 @@ export const sendRequest = async (url: string, data: any = null) => {
                 },
             };
         }
+
         // 네트워크 오류나 기타 예외 처리
         console.error("Network or other error:", error);
         return {

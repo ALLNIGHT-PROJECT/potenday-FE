@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useProfile } from "@/api/auth/profileApi"; // useProfile 훅 임포트
+import { useProfile } from "@/api/auth/useProfile"; // useProfile 훅 임포트
 
 export default function OnboardingProfilePage() {
     const [name, setName] = useState('');

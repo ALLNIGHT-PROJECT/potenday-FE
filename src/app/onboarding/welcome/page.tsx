@@ -3,8 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
-import { loginUser } from "@/features/onboarding/api";
-import {useLogin} from "@/api/auth/loginApi";
+import { useLogin } from "@/api/auth/useLogin";
 
 export default function OnboardingWelcomePage() {
     const router = useRouter();

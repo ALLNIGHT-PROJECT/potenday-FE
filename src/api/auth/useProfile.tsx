@@ -1,4 +1,3 @@
-// src/hooks/useProfile.ts
 import { useMutation } from '@tanstack/react-query';
 import { sendRequest } from "@/api/apiClient";  // apiClient 임포트
 
@@ -10,7 +9,7 @@ export type ProfileRequest = {
 // 프로필 제출 함수
 const submitProfile = async (profile: ProfileRequest) => {
     try {
-        const response = await sendRequest('/user/profile', profile);
+        const response = await sendRequest('POST', '/user/profile', profile);
         return response.data;
     } catch (error) {
         console.error("Error during profile submission:", error);
