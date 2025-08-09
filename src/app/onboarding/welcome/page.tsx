@@ -1,33 +1,71 @@
 'use client';
 
-import Image from "next/image";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/authStore";
+import { loginUser } from "@/features/onboarding/api";
+import {useLogin} from "@/api/auth/loginApi";
 
 export default function OnboardingWelcomePage() {
     const router = useRouter();
+    const setTokens = useAuthStore((state) => state.setTokens);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const { mutate: login, isError, isSuccess } = useLogin();
+
+    const handleLogin = () => {
+        // loginUser에 email, password를 전달하는 방식으로 변경
+        login({ email, password }, {
+            onSuccess: (data) => {
+                if (data) {
+                    // 로그인 성공 시 토큰 저장
+                    setTokens({ accessToken: data.token, refreshToken: data.refreshToken });
+                    router.replace('/onboarding/profile');
+                }
+            },
+            onError: () => {
+                alert('로그인 실패');
+            },
+        });
+    };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-white">
-            {/* 프로필/서비스 아이콘 (placeholder) */}
-            <div className="w-[130px] h-[130px] rounded-2xl bg-coolNeutral-300 flex items-center justify-center mb-6" />
-
+        <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
             {/* 메인 헤드라인 */}
             <h1 className="title-2 text-common-0 text-center mb-2">
                 막막함에서 벗어나, 당장 실행부터 할 수 있어요
             </h1>
 
             {/* 서브텍스트 */}
-            <p className="headline-2 text-coolNeutral-750 text-center mb-[88px]">
-                서비스 소개
+            <p className="headline-2 text-coolNeutral-750 text-center mb-8">
+                이메일로 로그인하세요
             </p>
 
-            {/* 네이버 로그인 버튼 */}
+            {/* 이메일 입력 */}
+            <input
+                type="email"
+                placeholder="이메일"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full max-w-sm px-4 py-3 mb-4 border border-coolNeutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+
+            {/* 비밀번호 입력 */}
+            <input
+                type="password"
+                placeholder="비밀번호"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full max-w-sm px-4 py-3 mb-6 border border-coolNeutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+
+            {/* 로그인 버튼 */}
             <button
-                className="flex items-center justify-center gap-[10px] px-4 py-3 rounded-lg bg-[#2DB400] text-common-100 body-3-700 shadow-md"
-                onClick={() => router.push('/onboarding/profile')}
+                className="w-full max-w-sm px-4 py-3 rounded-lg bg-primary text-common-100 body-3-700 shadow-md"
+                onClick={handleLogin}
             >
-                <Image src="/icons/ic-naver.svg" alt="네이버 아이콘" width={16} height={16} />
-                네이버 로그인으로 1초만에 시작
+                로그인
             </button>
         </div>
     );

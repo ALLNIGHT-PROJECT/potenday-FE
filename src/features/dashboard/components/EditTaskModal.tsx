@@ -88,14 +88,14 @@ export default function EditTaskModal({ onCloseAction, onSubmitAction }: EditTas
 
                     {/* 설명 */}
                     <div>
-            <textarea
-                rows={4}
-                className="w-full bg-white border border-coolNeutral-300 rounded-[6px] px-4 py-2 body-3-700 text-coolNeutral-900 focus:outline-none resize-none mb-10"
-                value={desc}
-                onChange={e => setDesc(e.target.value)}
-                placeholder="(선택) 할 일에 대해 간단하게 설명해주세요 (0/200)"
-                maxLength={200}
-            />
+                        <textarea
+                            rows={4}
+                            className="w-full bg-white border border-coolNeutral-300 rounded-[6px] px-4 py-2 body-3-700 text-coolNeutral-900 focus:outline-none resize-none mb-10"
+                            value={desc}
+                            onChange={e => setDesc(e.target.value)}
+                            placeholder="(선택) 할 일에 대해 간단하게 설명해주세요 (0/200)"
+                            maxLength={200}
+                        />
                     </div>
 
                     {/* 기한 */}
